@@ -1,3 +1,37 @@
 <resources>
     <string name="app_name">SmartPantryManager</string>
+
+    <string name="dashboard_title">Smart Pantry</string>
+    <string name="dashboard_subtitle">Manage your pantry smarter</string>
+    <string name="profile_icon">👤</string>
+
+    <string name="good_day">Good day 👋</string>
+    <string name="pantry_message">Keep your pantry organised and never miss an expiry date.</string>
+    <string name="pantry_overview">Pantry overview</string>
+
+    <string name="inventory_icon">📦</string>
+    <string name="inventory">Inventory</string>
+    <string name="manage_items">Manage items</string>
+
+    <string name="low_stock_icon">⚠️</string>
+    <string name="low_stock">Low Stock</string>
+    <string name="needs_attention">Needs attention</string>
+
+    <string name="expiring_icon">⏰</string>
+    <string name="expiring_soon">Expiring Soon</string>
+    <string name="check_expiry_dates">Check expiry dates</string>
+
+    <string name="shopping_icon">🛒</string>
+    <string name="shopping_list">Shopping List</string>
+    <string name="plan_shopping">Plan your shopping</string>
+
+    <string name="reports_icon">📊</string>
+    <string name="reports">Reports</string>
+    <string name="view_insights">View pantry insights</string>
+
+    <string name="profile">Profile</string>
+    <string name="account_settings">Account settings</string>
+
+    <string name="pantry_tagline">Your pantry. Smarter. Simpler.</string>
+
 </resources>

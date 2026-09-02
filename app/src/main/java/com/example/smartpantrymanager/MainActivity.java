@@ -1,7 +1,6 @@
 package com.example.smartpantrymanager;
-
+import android.content.Intent;
 import android.os.Bundle;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -16,7 +15,6 @@ import com.google.firebase.database.FirebaseDatabase;
 public class MainActivity extends AppCompatActivity {
 
     private DatabaseReference databaseReference;
-    private TextView connectionStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +23,10 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        connectionStatus = findViewById(R.id.connectionStatus);
+        findViewById(R.id.addItemCard).setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, AddItemActivity.class);
+            startActivity(intent);
+        });
 
         ViewCompat.setOnApplyWindowInsetsListener(
                 findViewById(R.id.main),
@@ -46,8 +47,6 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
-        connectionStatus.setText("Connecting to Firebase...");
-
         // Connect to the Smart Pantry Manager Firebase database
         databaseReference = FirebaseDatabase
                 .getInstance(
@@ -61,10 +60,6 @@ public class MainActivity extends AppCompatActivity {
                 .setValue("Firebase connected!")
                 .addOnSuccessListener(unused -> {
 
-                    connectionStatus.setText(
-                            "Firebase connected successfully!"
-                    );
-
                     Toast.makeText(
                             MainActivity.this,
                             "Firebase connected successfully!",
@@ -72,10 +67,6 @@ public class MainActivity extends AppCompatActivity {
                     ).show();
                 })
                 .addOnFailureListener(e -> {
-
-                    connectionStatus.setText(
-                            "Firebase connection failed"
-                    );
 
                     Toast.makeText(
                             MainActivity.this,
