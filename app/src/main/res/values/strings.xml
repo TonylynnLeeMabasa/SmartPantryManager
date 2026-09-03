@@ -39,4 +39,21 @@
     <string name="search_pantry_items">Search pantry items</string>
     <string name="your_pantry_items">Your pantry items</string>
 
+    <string name="edit_pantry_item">Edit pantry item</string>
+    <string name="item_name">Item name</string>
+    <string name="enter_item_name">Enter item name</string>
+    <string name="category">Category</string>
+    <string name="enter_category">Enter category</string>
+    <string name="quantity">Quantity</string>
+    <string name="enter_quantity">Enter quantity</string>
+    <string name="expiry_date">Expiry date</string>
+    <string name="select_expiry_date">Select expiry date</string>
+    <string name="low_stock_threshold">Low-stock threshold</string>
+    <string name="enter_low_stock_threshold">Enter low-stock threshold</string>
+    <string name="storage_location">Storage location</string>
+    <string name="storage_location_hint">e.g. Fridge, Freezer or Cupboard</string>
+    <string name="update_pantry_item">Update pantry item</string>
+    <string name="delete_pantry_item">Delete pantry item</string>
+    <string name="back_button_description">Go back</string>
+
 </resources>

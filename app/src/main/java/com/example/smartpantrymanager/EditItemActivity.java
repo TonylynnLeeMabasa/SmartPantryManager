@@ -1,5 +1,6 @@
 package com.example.smartpantrymanager;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.widget.EditText;
@@ -52,6 +53,9 @@ public class EditItemActivity extends AppCompatActivity {
         findViewById(R.id.updateItemButton)
                 .setOnClickListener(v -> updatePantryItem());
 
+        findViewById(R.id.deleteItemButton)
+                .setOnClickListener(v -> confirmDelete());
+
         loadItem();
     }
 
@@ -89,15 +93,26 @@ public class EditItemActivity extends AppCompatActivity {
                     }
 
                     itemNameInput.setText(item.getName());
-                    categoryInput.setText(item.getCategory());
+
+                    categoryInput.setText(
+                            item.getCategory()
+                    );
+
                     quantityInput.setText(
                             String.valueOf(item.getQuantity())
                     );
-                    expiryDateInput.setText(item.getExpiryDate());
+
+                    expiryDateInput.setText(
+                            item.getExpiryDate()
+                    );
+
                     lowStockInput.setText(
                             String.valueOf(item.getLowStockLevel())
                     );
-                    locationInput.setText(item.getLocation());
+
+                    locationInput.setText(
+                            item.getLocation()
+                    );
                 })
                 .addOnFailureListener(e -> {
 
@@ -142,45 +157,80 @@ public class EditItemActivity extends AppCompatActivity {
 
     private void updatePantryItem() {
 
-        String itemName = itemNameInput.getText().toString().trim();
-        String category = categoryInput.getText().toString().trim();
-        String quantityText = quantityInput.getText().toString().trim();
-        String expiryDate = expiryDateInput.getText().toString().trim();
-        String lowStockText = lowStockInput.getText().toString().trim();
-        String location = locationInput.getText().toString().trim();
+        String itemName =
+                itemNameInput.getText().toString().trim();
+
+        String category =
+                categoryInput.getText().toString().trim();
+
+        String quantityText =
+                quantityInput.getText().toString().trim();
+
+        String expiryDate =
+                expiryDateInput.getText().toString().trim();
+
+        String lowStockText =
+                lowStockInput.getText().toString().trim();
+
+        String location =
+                locationInput.getText().toString().trim();
 
         if (itemName.isEmpty()) {
-            itemNameInput.setError("Enter the item name");
+
+            itemNameInput.setError(
+                    "Enter the item name"
+            );
+
             itemNameInput.requestFocus();
             return;
         }
 
         if (category.isEmpty()) {
-            categoryInput.setError("Enter the category");
+
+            categoryInput.setError(
+                    "Enter the category"
+            );
+
             categoryInput.requestFocus();
             return;
         }
 
         if (quantityText.isEmpty()) {
-            quantityInput.setError("Enter the quantity");
+
+            quantityInput.setError(
+                    "Enter the quantity"
+            );
+
             quantityInput.requestFocus();
             return;
         }
 
         if (expiryDate.isEmpty()) {
-            expiryDateInput.setError("Select an expiry date");
+
+            expiryDateInput.setError(
+                    "Select an expiry date"
+            );
+
             expiryDateInput.requestFocus();
             return;
         }
 
         if (lowStockText.isEmpty()) {
-            lowStockInput.setError("Enter the low-stock threshold");
+
+            lowStockInput.setError(
+                    "Enter the low-stock threshold"
+            );
+
             lowStockInput.requestFocus();
             return;
         }
 
         if (location.isEmpty()) {
-            locationInput.setError("Enter the storage location");
+
+            locationInput.setError(
+                    "Enter the storage location"
+            );
+
             locationInput.requestFocus();
             return;
         }
@@ -189,8 +239,13 @@ public class EditItemActivity extends AppCompatActivity {
         int lowStockLevel;
 
         try {
-            quantity = Integer.parseInt(quantityText);
-            lowStockLevel = Integer.parseInt(lowStockText);
+
+            quantity =
+                    Integer.parseInt(quantityText);
+
+            lowStockLevel =
+                    Integer.parseInt(lowStockText);
+
         } catch (NumberFormatException e) {
 
             Toast.makeText(
@@ -202,15 +257,16 @@ public class EditItemActivity extends AppCompatActivity {
             return;
         }
 
-        PantryItem updatedItem = new PantryItem(
-                itemId,
-                itemName,
-                category,
-                quantity,
-                expiryDate,
-                lowStockLevel,
-                location
-        );
+        PantryItem updatedItem =
+                new PantryItem(
+                        itemId,
+                        itemName,
+                        category,
+                        quantity,
+                        expiryDate,
+                        lowStockLevel,
+                        location
+                );
 
         databaseReference
                 .child("pantry_items")
@@ -231,6 +287,63 @@ public class EditItemActivity extends AppCompatActivity {
                     Toast.makeText(
                             EditItemActivity.this,
                             "Could not update item: "
+                                    + e.getMessage(),
+                            Toast.LENGTH_LONG
+                    ).show();
+                });
+    }
+
+    private void confirmDelete() {
+
+        new AlertDialog.Builder(this)
+                .setTitle("Delete pantry item")
+                .setMessage(
+                        "Are you sure you want to delete this item? "
+                                + "This action cannot be undone."
+                )
+                .setNegativeButton(
+                        "Cancel",
+                        null
+                )
+                .setPositiveButton(
+                        "Delete",
+                        (dialog, which) -> deletePantryItem()
+                )
+                .show();
+    }
+
+    private void deletePantryItem() {
+
+        if (itemId == null || itemId.isEmpty()) {
+
+            Toast.makeText(
+                    this,
+                    "Pantry item could not be found.",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            return;
+        }
+
+        databaseReference
+                .child("pantry_items")
+                .child(itemId)
+                .removeValue()
+                .addOnSuccessListener(unused -> {
+
+                    Toast.makeText(
+                            EditItemActivity.this,
+                            "Pantry item deleted successfully!",
+                            Toast.LENGTH_SHORT
+                    ).show();
+
+                    finish();
+                })
+                .addOnFailureListener(e -> {
+
+                    Toast.makeText(
+                            EditItemActivity.this,
+                            "Could not delete item: "
                                     + e.getMessage(),
                             Toast.LENGTH_LONG
                     ).show();
