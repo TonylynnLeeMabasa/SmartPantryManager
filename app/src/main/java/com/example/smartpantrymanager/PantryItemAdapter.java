@@ -1,5 +1,6 @@
 package com.example.smartpantrymanager;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,12 +41,26 @@ public class PantryItemAdapter
 
         holder.itemNameText.setText(item.getName());
         holder.categoryText.setText(item.getCategory());
-        holder.quantityText.setText(String.valueOf(item.getQuantity()));
+        holder.quantityText.setText(
+                String.valueOf(item.getQuantity())
+        );
         holder.locationText.setText(item.getLocation());
 
         holder.expiryDateText.setText(
                 "Expires: " + item.getExpiryDate()
         );
+
+        holder.itemView.setOnClickListener(v -> {
+
+            Intent intent = new Intent(
+                    v.getContext(),
+                    EditItemActivity.class
+            );
+
+            intent.putExtra("itemId", item.getId());
+
+            v.getContext().startActivity(intent);
+        });
     }
 
     @Override

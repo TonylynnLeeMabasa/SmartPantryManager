@@ -31,6 +31,10 @@
         <activity
             android:name=".InventoryActivity"
             android:exported="false" />
+        <activity
+            android:name=".EditItemActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>
