@@ -148,6 +148,7 @@
 
                 <!-- Total items -->
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/inventoryCard"
                     android:layout_width="0dp"
                     android:layout_height="145dp"
                     android:layout_marginEnd="7dp"

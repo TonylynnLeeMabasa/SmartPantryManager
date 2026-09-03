@@ -1,4 +1,5 @@
 package com.example.smartpantrymanager;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -22,11 +23,6 @@ public class MainActivity extends AppCompatActivity {
 
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-
-        findViewById(R.id.addItemCard).setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, AddItemActivity.class);
-            startActivity(intent);
-        });
 
         ViewCompat.setOnApplyWindowInsetsListener(
                 findViewById(R.id.main),
@@ -75,5 +71,27 @@ public class MainActivity extends AppCompatActivity {
                             Toast.LENGTH_LONG
                     ).show();
                 });
+
+        // Open Add Pantry Item screen
+        findViewById(R.id.addItemCard).setOnClickListener(v -> {
+
+            Intent intent = new Intent(
+                    MainActivity.this,
+                    AddItemActivity.class
+            );
+
+            startActivity(intent);
+        });
+
+        // Open Inventory screen
+        findViewById(R.id.inventoryCard).setOnClickListener(v -> {
+
+            Intent intent = new Intent(
+                    MainActivity.this,
+                    InventoryActivity.class
+            );
+
+            startActivity(intent);
+        });
     }
 }

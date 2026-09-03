@@ -34,4 +34,9 @@
 
     <string name="pantry_tagline">Your pantry. Smarter. Simpler.</string>
 
+    <string name="back_arrow">‹</string>
+    <string name="pantry">Pantry</string>
+    <string name="search_pantry_items">Search pantry items</string>
+    <string name="your_pantry_items">Your pantry items</string>
+
 </resources>
