@@ -2,75 +2,58 @@ package com.example.smartpantrymanager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
     private DatabaseReference databaseReference;
 
+    private TextView totalItemsCount;
+    private TextView lowStockCount;
+    private TextView expiringSoonCount;
+
+    private TextView lowStockMessage;
+    private TextView lowStockDescription;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        ViewCompat.setOnApplyWindowInsetsListener(
-                findViewById(R.id.main),
-                (v, insets) -> {
+        // Dashboard statistic views
+        totalItemsCount = findViewById(R.id.totalItemsCount);
+        lowStockCount = findViewById(R.id.lowStockCount);
+        expiringSoonCount = findViewById(R.id.expiringSoonCount);
 
-                    Insets systemBars = insets.getInsets(
-                            WindowInsetsCompat.Type.systemBars()
-                    );
+        lowStockMessage = findViewById(R.id.lowStockMessage);
+        lowStockDescription = findViewById(R.id.lowStockDescription);
 
-                    v.setPadding(
-                            systemBars.left,
-                            systemBars.top,
-                            systemBars.right,
-                            systemBars.bottom
-                    );
-
-                    return insets;
-                }
-        );
-
-        // Connect to the Smart Pantry Manager Firebase database
+        // Connect to Firebase
         databaseReference = FirebaseDatabase
                 .getInstance(
                         "https://smart-pantry-manager-7e502-default-rtdb.europe-west1.firebasedatabase.app/"
                 )
                 .getReference();
 
-        // Test Firebase connection
-        databaseReference
-                .child("test")
-                .setValue("Firebase connected!")
-                .addOnSuccessListener(unused -> {
-
-                    Toast.makeText(
-                            MainActivity.this,
-                            "Firebase connected successfully!",
-                            Toast.LENGTH_LONG
-                    ).show();
-                })
-                .addOnFailureListener(e -> {
-
-                    Toast.makeText(
-                            MainActivity.this,
-                            "Firebase connection failed: "
-                                    + e.getMessage(),
-                            Toast.LENGTH_LONG
-                    ).show();
-                });
+        // Load dashboard statistics
+        loadDashboardStatistics();
 
         // Open Add Pantry Item screen
         findViewById(R.id.addItemCard).setOnClickListener(v -> {
@@ -93,5 +76,199 @@ public class MainActivity extends AppCompatActivity {
 
             startActivity(intent);
         });
+    }
+
+    private void loadDashboardStatistics() {
+
+        databaseReference
+                .child("pantry_items")
+                .addValueEventListener(new ValueEventListener() {
+
+                    @Override
+                    public void onDataChange(
+                            @NonNull DataSnapshot snapshot
+                    ) {
+
+                        int totalItems = 0;
+                        int lowStockItems = 0;
+                        int expiringSoonItems = 0;
+
+                        for (DataSnapshot itemSnapshot
+                                : snapshot.getChildren()) {
+
+                            PantryItem item =
+                                    itemSnapshot.getValue(
+                                            PantryItem.class
+                                    );
+
+                            if (item == null) {
+                                continue;
+                            }
+
+                            totalItems++;
+
+                            // Check low stock
+                            if (item.getQuantity()
+                                    <= item.getLowStockLevel()) {
+
+                                lowStockItems++;
+                            }
+
+                            // Check expiry
+                            if (isExpiringSoon(
+                                    item.getExpiryDate()
+                            )) {
+
+                                expiringSoonItems++;
+                            }
+                        }
+
+                        // Update dashboard numbers
+                        totalItemsCount.setText(
+                                String.valueOf(totalItems)
+                        );
+
+                        lowStockCount.setText(
+                                String.valueOf(lowStockItems)
+                        );
+
+                        expiringSoonCount.setText(
+                                String.valueOf(expiringSoonItems)
+                        );
+
+                        // Update low-stock message
+                        updateLowStockMessage(
+                                lowStockItems
+                        );
+                    }
+
+                    @Override
+                    public void onCancelled(
+                            @NonNull DatabaseError error
+                    ) {
+
+                        Toast.makeText(
+                                MainActivity.this,
+                                "Could not load dashboard data: "
+                                        + error.getMessage(),
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
+                });
+    }
+
+    private boolean isExpiringSoon(String expiryDate) {
+
+        if (expiryDate == null
+                || expiryDate.trim().isEmpty()) {
+
+            return false;
+        }
+
+        SimpleDateFormat dateFormat =
+                new SimpleDateFormat(
+                        "yyyy-MM-dd",
+                        Locale.getDefault()
+                );
+
+        dateFormat.setLenient(false);
+
+        try {
+
+            Date expiry =
+                    dateFormat.parse(expiryDate);
+
+            if (expiry == null) {
+                return false;
+            }
+
+            Calendar today =
+                    Calendar.getInstance();
+
+            // Remove the time portion from today's date
+            today.set(
+                    Calendar.HOUR_OF_DAY,
+                    0
+            );
+
+            today.set(
+                    Calendar.MINUTE,
+                    0
+            );
+
+            today.set(
+                    Calendar.SECOND,
+                    0
+            );
+
+            today.set(
+                    Calendar.MILLISECOND,
+                    0
+            );
+
+            Calendar sevenDaysFromNow =
+                    (Calendar) today.clone();
+
+            sevenDaysFromNow.add(
+                    Calendar.DAY_OF_YEAR,
+                    7
+            );
+
+            return !expiry.before(
+                    today.getTime()
+            )
+                    && !expiry.after(
+                    sevenDaysFromNow.getTime()
+            );
+
+        } catch (ParseException e) {
+
+            return false;
+        }
+    }
+
+    private void updateLowStockMessage(
+            int lowStockItems
+    ) {
+
+        if (lowStockItems == 0) {
+
+            lowStockMessage.setText(
+                    "Everything is stocked"
+            );
+
+            lowStockDescription.setText(
+                    "No low-stock items yet."
+            );
+
+        } else if (lowStockItems == 1) {
+
+            lowStockMessage.setText(
+                    "1 item needs attention"
+            );
+
+            lowStockDescription.setText(
+                    "One pantry item is running low."
+            );
+
+        } else {
+
+            lowStockMessage.setText(
+                    lowStockItems
+                            + " items need attention"
+            );
+
+            lowStockDescription.setText(
+                    "Some pantry items are running low."
+            );
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Firebase ValueEventListener already keeps
+        // the dashboard data updated automatically.
     }
 }
