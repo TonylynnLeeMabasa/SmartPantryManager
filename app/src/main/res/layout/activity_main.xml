@@ -337,11 +337,25 @@
             </LinearLayout>
 
 
+            <!-- Expiring items list -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/expiringItemsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never"
+                tools:itemCount="2"
+                tools:listitem="@layout/item_expiring" />
+
+
             <!-- Empty expiry state -->
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/emptyExpiryCard"
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
                 android:layout_marginTop="12dp"
+                android:visibility="gone"
                 app:cardBackgroundColor="#FFFFFF"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="0dp"
