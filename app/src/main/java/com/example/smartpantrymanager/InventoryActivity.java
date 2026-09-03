@@ -1,6 +1,7 @@
 package com.example.smartpantrymanager;
 
 import android.os.Bundle;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,8 +22,11 @@ public class InventoryActivity extends AppCompatActivity {
 
     private RecyclerView inventoryRecyclerView;
     private PantryItemAdapter pantryItemAdapter;
-    private final List<PantryItem> pantryItems = new ArrayList<>();
 
+    private final List<PantryItem> pantryItems = new ArrayList<>();
+    private final List<PantryItem> allPantryItems = new ArrayList<>();
+
+    private EditText searchInput;
     private DatabaseReference databaseReference;
 
     @Override
@@ -32,6 +36,7 @@ public class InventoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_inventory);
 
         inventoryRecyclerView = findViewById(R.id.inventoryRecyclerView);
+        searchInput = findViewById(R.id.searchInput);
 
         inventoryRecyclerView.setLayoutManager(
                 new LinearLayoutManager(this)
@@ -49,6 +54,36 @@ public class InventoryActivity extends AppCompatActivity {
                 .getReference();
 
         loadPantryItems();
+
+        searchInput.addTextChangedListener(
+                new android.text.TextWatcher() {
+
+                    @Override
+                    public void beforeTextChanged(
+                            CharSequence text,
+                            int start,
+                            int count,
+                            int after
+                    ) {
+                    }
+
+                    @Override
+                    public void onTextChanged(
+                            CharSequence text,
+                            int start,
+                            int before,
+                            int count
+                    ) {
+                        filterPantryItems(text.toString());
+                    }
+
+                    @Override
+                    public void afterTextChanged(
+                            android.text.Editable editable
+                    ) {
+                    }
+                }
+        );
     }
 
     private void loadPantryItems() {
@@ -63,6 +98,7 @@ public class InventoryActivity extends AppCompatActivity {
                     ) {
 
                         pantryItems.clear();
+                        allPantryItems.clear();
 
                         for (DataSnapshot itemSnapshot : snapshot.getChildren()) {
 
@@ -71,6 +107,7 @@ public class InventoryActivity extends AppCompatActivity {
 
                             if (item != null) {
                                 pantryItems.add(item);
+                                allPantryItems.add(item);
                             }
                         }
 
@@ -90,5 +127,41 @@ public class InventoryActivity extends AppCompatActivity {
                         ).show();
                     }
                 });
+    }
+
+    private void filterPantryItems(String searchText) {
+
+        String search = searchText.trim().toLowerCase();
+
+        pantryItems.clear();
+
+        if (search.isEmpty()) {
+            pantryItems.addAll(allPantryItems);
+        } else {
+
+            for (PantryItem item : allPantryItems) {
+
+                String itemName = item.getName() == null
+                        ? ""
+                        : item.getName().toLowerCase();
+
+                String category = item.getCategory() == null
+                        ? ""
+                        : item.getCategory().toLowerCase();
+
+                String location = item.getLocation() == null
+                        ? ""
+                        : item.getLocation().toLowerCase();
+
+                if (itemName.contains(search)
+                        || category.contains(search)
+                        || location.contains(search)) {
+
+                    pantryItems.add(item);
+                }
+            }
+        }
+
+        pantryItemAdapter.notifyDataSetChanged();
     }
 }
