@@ -41,7 +41,14 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView expiringItemsRecyclerView;
     private ExpiringItemAdapter expiringItemAdapter;
 
-    private final List<PantryItem> expiringItems = new ArrayList<>();
+    private RecyclerView lowStockItemsRecyclerView;
+    private LowStockItemAdapter lowStockItemAdapter;
+
+    private final List<PantryItem> expiringItems =
+            new ArrayList<>();
+
+    private final List<PantryItem> lowStockItems =
+            new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,12 +57,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Dashboard statistics
-        totalItemsCount = findViewById(R.id.totalItemsCount);
-        lowStockCount = findViewById(R.id.lowStockCount);
-        expiringSoonCount = findViewById(R.id.expiringSoonCount);
+        totalItemsCount =
+                findViewById(R.id.totalItemsCount);
 
-        lowStockMessage = findViewById(R.id.lowStockMessage);
-        lowStockDescription = findViewById(R.id.lowStockDescription);
+        lowStockCount =
+                findViewById(R.id.lowStockCount);
+
+        expiringSoonCount =
+                findViewById(R.id.expiringSoonCount);
+
+        lowStockMessage =
+                findViewById(R.id.lowStockMessage);
+
+        lowStockDescription =
+                findViewById(R.id.lowStockDescription);
 
         // Expiring items list
         expiringItemsRecyclerView =
@@ -65,13 +80,34 @@ public class MainActivity extends AppCompatActivity {
                 new LinearLayoutManager(this)
         );
 
-        expiringItemsRecyclerView.setNestedScrollingEnabled(false);
+        expiringItemsRecyclerView.setNestedScrollingEnabled(
+                false
+        );
 
         expiringItemAdapter =
                 new ExpiringItemAdapter(expiringItems);
 
         expiringItemsRecyclerView.setAdapter(
                 expiringItemAdapter
+        );
+
+        // Low-stock items list
+        lowStockItemsRecyclerView =
+                findViewById(R.id.lowStockItemsRecyclerView);
+
+        lowStockItemsRecyclerView.setLayoutManager(
+                new LinearLayoutManager(this)
+        );
+
+        lowStockItemsRecyclerView.setNestedScrollingEnabled(
+                false
+        );
+
+        lowStockItemAdapter =
+                new LowStockItemAdapter(lowStockItems);
+
+        lowStockItemsRecyclerView.setAdapter(
+                lowStockItemAdapter
         );
 
         // Firebase
@@ -84,26 +120,28 @@ public class MainActivity extends AppCompatActivity {
         loadDashboardStatistics();
 
         // Add item
-        findViewById(R.id.addItemCard).setOnClickListener(v -> {
+        findViewById(R.id.addItemCard)
+                .setOnClickListener(v -> {
 
-            Intent intent = new Intent(
-                    MainActivity.this,
-                    AddItemActivity.class
-            );
+                    Intent intent = new Intent(
+                            MainActivity.this,
+                            AddItemActivity.class
+                    );
 
-            startActivity(intent);
-        });
+                    startActivity(intent);
+                });
 
         // Inventory
-        findViewById(R.id.inventoryCard).setOnClickListener(v -> {
+        findViewById(R.id.inventoryCard)
+                .setOnClickListener(v -> {
 
-            Intent intent = new Intent(
-                    MainActivity.this,
-                    InventoryActivity.class
-            );
+                    Intent intent = new Intent(
+                            MainActivity.this,
+                            InventoryActivity.class
+                    );
 
-            startActivity(intent);
-        });
+                    startActivity(intent);
+                });
     }
 
     private void loadDashboardStatistics() {
@@ -119,10 +157,11 @@ public class MainActivity extends AppCompatActivity {
                             ) {
 
                                 int totalItems = 0;
-                                int lowStockItems = 0;
+                                int lowStockItemsCount = 0;
                                 int expiringSoonItems = 0;
 
                                 expiringItems.clear();
+                                lowStockItems.clear();
 
                                 for (DataSnapshot itemSnapshot
                                         : snapshot.getChildren()) {
@@ -142,7 +181,9 @@ public class MainActivity extends AppCompatActivity {
                                     if (item.getQuantity()
                                             <= item.getLowStockLevel()) {
 
-                                        lowStockItems++;
+                                        lowStockItemsCount++;
+
+                                        lowStockItems.add(item);
                                     }
 
                                     // Check expiry
@@ -166,7 +207,9 @@ public class MainActivity extends AppCompatActivity {
                                 );
 
                                 lowStockCount.setText(
-                                        String.valueOf(lowStockItems)
+                                        String.valueOf(
+                                                lowStockItemsCount
+                                        )
                                 );
 
                                 expiringSoonCount.setText(
@@ -177,14 +220,20 @@ public class MainActivity extends AppCompatActivity {
 
                                 // Update low-stock message
                                 updateLowStockMessage(
-                                        lowStockItems
+                                        lowStockItemsCount
                                 );
 
-                                // Update expiry list
+                                // Update expiring items
                                 expiringItemAdapter
                                         .notifyDataSetChanged();
 
                                 updateExpiringItemsVisibility();
+
+                                // Update low-stock items
+                                lowStockItemAdapter
+                                        .notifyDataSetChanged();
+
+                                updateLowStockItemsVisibility();
                             }
 
                             @Override
@@ -349,6 +398,33 @@ public class MainActivity extends AppCompatActivity {
             );
 
             emptyExpiryCard.setVisibility(
+                    View.GONE
+            );
+        }
+    }
+
+    private void updateLowStockItemsVisibility() {
+
+        View emptyLowStockCard =
+                findViewById(R.id.emptyLowStockCard);
+
+        if (lowStockItems.isEmpty()) {
+
+            lowStockItemsRecyclerView.setVisibility(
+                    View.GONE
+            );
+
+            emptyLowStockCard.setVisibility(
+                    View.VISIBLE
+            );
+
+        } else {
+
+            lowStockItemsRecyclerView.setVisibility(
+                    View.VISIBLE
+            );
+
+            emptyLowStockCard.setVisibility(
                     View.GONE
             );
         }

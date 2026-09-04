@@ -407,7 +407,7 @@
             </com.google.android.material.card.MaterialCardView>
 
 
-            <!-- Low stock -->
+            <!-- Low stock heading -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -417,6 +417,8 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
+
+            <!-- Low stock summary -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="105dp"
@@ -478,6 +480,78 @@
                         android:textColor="#B45309"
                         android:textSize="22sp"
                         android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <!-- Low stock items list -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/lowStockItemsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never"
+                tools:itemCount="2"
+                tools:listitem="@layout/item_low_stock" />
+
+
+            <!-- Empty low-stock state -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/emptyLowStockCard"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginTop="12dp"
+                android:visibility="gone"
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:strokeColor="#E7EBE7"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="18dp">
+
+                    <TextView
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
+                        android:background="@drawable/empty_circle"
+                        android:gravity="center"
+                        android:text="✓"
+                        android:textColor="#2F6B42"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Stock levels look good!"
+                            android:textColor="#27352B"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="No pantry items are running low."
+                            android:textColor="#7A857E"
+                            android:textSize="13sp" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
