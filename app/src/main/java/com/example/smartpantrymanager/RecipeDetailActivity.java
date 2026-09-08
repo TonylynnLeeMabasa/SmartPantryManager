@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -25,6 +26,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
     private DatabaseReference recipeReference;
     private DatabaseReference pantryReference;
+    private DatabaseReference shoppingReference;
 
     private TextView recipeName;
     private TextView recipeDescription;
@@ -36,6 +38,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
     private LinearLayout instructionsContainer;
 
     private MaterialCardView missingIngredientsCard;
+    private MaterialButton addMissingToShoppingListButton;
 
     private Recipe recipe;
 
@@ -43,6 +46,12 @@ public class RecipeDetailActivity extends AppCompatActivity {
             new ArrayList<>();
 
     private final List<String> missingIngredients =
+            new ArrayList<>();
+
+    private final List<String> missingIngredientNames =
+            new ArrayList<>();
+
+    private final List<Integer> missingIngredientQuantities =
             new ArrayList<>();
 
     @Override
@@ -74,13 +83,16 @@ public class RecipeDetailActivity extends AppCompatActivity {
                 );
 
         instructionsContainer =
-                findViewById(
-                        R.id.instructionsContainer
-                );
+                findViewById(R.id.instructionsContainer);
 
         missingIngredientsCard =
                 findViewById(
                         R.id.missingIngredientsCard
+                );
+
+        addMissingToShoppingListButton =
+                findViewById(
+                        R.id.addMissingToShoppingListButton
                 );
 
         TextView backButton =
@@ -88,6 +100,10 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
         backButton.setOnClickListener(
                 v -> finish()
+        );
+
+        addMissingToShoppingListButton.setOnClickListener(
+                v -> addMissingIngredientsToShoppingList()
         );
 
         String recipeId =
@@ -108,22 +124,26 @@ public class RecipeDetailActivity extends AppCompatActivity {
             return;
         }
 
+        FirebaseDatabase database =
+                FirebaseDatabase.getInstance(
+                        "https://smart-pantry-manager-7e502-default-rtdb.europe-west1.firebasedatabase.app/"
+                );
+
         recipeReference =
-                FirebaseDatabase
-                        .getInstance(
-                                "https://smart-pantry-manager-7e502-default-rtdb.europe-west1.firebasedatabase.app/"
-                        )
+                database
                         .getReference()
                         .child("recipes")
                         .child(recipeId);
 
         pantryReference =
-                FirebaseDatabase
-                        .getInstance(
-                                "https://smart-pantry-manager-7e502-default-rtdb.europe-west1.firebasedatabase.app/"
-                        )
+                database
                         .getReference()
                         .child("pantry_items");
+
+        shoppingReference =
+                database
+                        .getReference()
+                        .child("shopping_items");
 
         loadRecipe();
     }
@@ -350,6 +370,10 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
         missingIngredients.clear();
 
+        missingIngredientNames.clear();
+
+        missingIngredientQuantities.clear();
+
         List<String> ingredients =
                 recipe.getIngredients();
 
@@ -403,6 +427,14 @@ public class RecipeDetailActivity extends AppCompatActivity {
                         requiredQuantity
                                 - availableQuantity;
 
+                missingIngredientNames.add(
+                        requiredIngredient
+                );
+
+                missingIngredientQuantities.add(
+                        shortage
+                );
+
                 if (availableQuantity == 0) {
 
                     missingIngredients.add(
@@ -449,7 +481,8 @@ public class RecipeDetailActivity extends AppCompatActivity {
         for (PantryItem pantryItem :
                 pantryItems) {
 
-            if (pantryItem.getName() == null) {
+            if (pantryItem == null
+                    || pantryItem.getName() == null) {
                 continue;
             }
 
@@ -488,6 +521,10 @@ public class RecipeDetailActivity extends AppCompatActivity {
                     "✓ You have everything needed"
             );
 
+            recipeStatusText.setTextColor(
+                    0xFF2F6B42
+            );
+
             ingredientsSummary.setText(
                     "All required ingredients are available."
             );
@@ -495,6 +532,11 @@ public class RecipeDetailActivity extends AppCompatActivity {
             missingIngredientsCard.setVisibility(
                     View.GONE
             );
+
+            addMissingToShoppingListButton
+                    .setVisibility(
+                            View.GONE
+                    );
 
         } else {
 
@@ -514,6 +556,11 @@ public class RecipeDetailActivity extends AppCompatActivity {
                     View.VISIBLE
             );
 
+            addMissingToShoppingListButton
+                    .setVisibility(
+                            View.VISIBLE
+                    );
+
             for (String missing :
                     missingIngredients) {
 
@@ -528,6 +575,101 @@ public class RecipeDetailActivity extends AppCompatActivity {
                         );
             }
         }
+    }
+
+    private void addMissingIngredientsToShoppingList() {
+
+        if (missingIngredientNames.isEmpty()) {
+
+            Toast.makeText(
+                    this,
+                    "There are no missing ingredients to add.",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            return;
+        }
+
+        addMissingToShoppingListButton
+                .setEnabled(false);
+
+        addShoppingItemAtIndex(0);
+    }
+
+    private void addShoppingItemAtIndex(
+            int index
+    ) {
+
+        if (index >= missingIngredientNames.size()) {
+
+            addMissingToShoppingListButton
+                    .setEnabled(true);
+
+            Toast.makeText(
+                    this,
+                    "Missing ingredients added to shopping list.",
+                    Toast.LENGTH_LONG
+            ).show();
+
+            return;
+        }
+
+        String ingredientName =
+                missingIngredientNames.get(index);
+
+        int quantity =
+                missingIngredientQuantities.get(index);
+
+        String shoppingItemId =
+                shoppingReference.push().getKey();
+
+        if (shoppingItemId == null) {
+
+            addMissingToShoppingListButton
+                    .setEnabled(true);
+
+            Toast.makeText(
+                    this,
+                    "Could not create shopping list item.",
+                    Toast.LENGTH_LONG
+            ).show();
+
+            return;
+        }
+
+        ShoppingItem shoppingItem =
+                new ShoppingItem(
+                        shoppingItemId,
+                        ingredientName,
+                        quantity,
+                        false
+                );
+
+        shoppingReference
+                .child(shoppingItemId)
+                .setValue(shoppingItem)
+                .addOnCompleteListener(task -> {
+
+                    if (task.isSuccessful()) {
+
+                        addShoppingItemAtIndex(
+                                index + 1
+                        );
+
+                    } else {
+
+                        addMissingToShoppingListButton
+                                .setEnabled(true);
+
+                        Toast.makeText(
+                                RecipeDetailActivity.this,
+                                "Could not add "
+                                        + ingredientName
+                                        + " to shopping list.",
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
+                });
     }
 
     private TextView createIngredientTextView(

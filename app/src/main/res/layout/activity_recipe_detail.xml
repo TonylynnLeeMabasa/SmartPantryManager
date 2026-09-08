@@ -24,7 +24,6 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <!-- Back button -->
             <TextView
                 android:id="@+id/backButton"
                 android:layout_width="wrap_content"
@@ -35,7 +34,6 @@
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
-            <!-- Recipe header -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -78,7 +76,6 @@
                         android:textColor="#7A857E"
                         android:textSize="14sp" />
 
-                    <!-- Can make status -->
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/recipeStatusCard"
                         android:layout_width="match_parent"
@@ -104,7 +101,6 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Ingredients heading -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -123,7 +119,6 @@
                 android:textColor="#7A857E"
                 android:textSize="13sp" />
 
-            <!-- Ingredients list -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -141,7 +136,6 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Missing ingredients -->
             <TextView
                 android:id="@+id/missingIngredientsHeading"
                 android:layout_width="wrap_content"
@@ -170,7 +164,19 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Instructions -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/addMissingToShoppingListButton"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="14dp"
+                android:text="Add Missing Ingredients to Shopping List"
+                android:textAllCaps="false"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:backgroundTint="#2F6B42"
+                app:cornerRadius="15dp" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
