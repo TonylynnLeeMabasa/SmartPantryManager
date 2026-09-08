@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Allow the app to connect to Firebase and the internet -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -48,6 +47,14 @@
 
         <activity
             android:name=".ShoppingListActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".RecipeListActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".RecipeDetailActivity"
             android:exported="false" />
 
     </application>

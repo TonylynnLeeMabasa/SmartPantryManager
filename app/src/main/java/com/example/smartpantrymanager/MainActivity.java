@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -21,8 +22,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -32,17 +31,22 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference databaseReference;
 
     private TextView totalItemsCount;
-    private TextView lowStockCount;
     private TextView expiringSoonCount;
 
-    private TextView lowStockMessage;
+    private TextView lowStockCount;
     private TextView lowStockDescription;
 
     private RecyclerView expiringItemsRecyclerView;
-    private ExpiringItemAdapter expiringItemAdapter;
-
     private RecyclerView lowStockItemsRecyclerView;
+
+    private MaterialCardView emptyExpiryCard;
+    private MaterialCardView emptyLowStockCard;
+
+    private ExpiringItemAdapter expiringItemAdapter;
     private LowStockItemAdapter lowStockItemAdapter;
+
+    private final List<PantryItem> pantryItems =
+            new ArrayList<>();
 
     private final List<PantryItem> expiringItems =
             new ArrayList<>();
@@ -50,348 +54,289 @@ public class MainActivity extends AppCompatActivity {
     private final List<PantryItem> lowStockItems =
             new ArrayList<>();
 
+    private final SimpleDateFormat dateFormat =
+            new SimpleDateFormat(
+                    "yyyy-MM-dd",
+                    Locale.getDefault()
+            );
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
 
-        // Dashboard statistics
         totalItemsCount =
                 findViewById(R.id.totalItemsCount);
-
-        lowStockCount =
-                findViewById(R.id.lowStockCount);
 
         expiringSoonCount =
                 findViewById(R.id.expiringSoonCount);
 
-        lowStockMessage =
-                findViewById(R.id.lowStockMessage);
+        lowStockCount =
+                findViewById(R.id.lowStockCount);
 
         lowStockDescription =
                 findViewById(R.id.lowStockDescription);
 
-        // Expiring items list
         expiringItemsRecyclerView =
-                findViewById(R.id.expiringItemsRecyclerView);
+                findViewById(
+                        R.id.expiringItemsRecyclerView
+                );
+
+        lowStockItemsRecyclerView =
+                findViewById(
+                        R.id.lowStockItemsRecyclerView
+                );
+
+        emptyExpiryCard =
+                findViewById(
+                        R.id.emptyExpiryCard
+                );
+
+        emptyLowStockCard =
+                findViewById(
+                        R.id.emptyLowStockCard
+                );
+
+        setupRecyclerViews();
+
+        databaseReference =
+                FirebaseDatabase
+                        .getInstance(
+                                "https://smart-pantry-manager-7e502-default-rtdb.europe-west1.firebasedatabase.app/"
+                        )
+                        .getReference()
+                        .child("pantry_items");
+
+        setupNavigation();
+
+        loadPantryItems();
+    }
+
+    private void setupRecyclerViews() {
 
         expiringItemsRecyclerView.setLayoutManager(
                 new LinearLayoutManager(this)
         );
 
-        expiringItemsRecyclerView.setNestedScrollingEnabled(
-                false
-        );
+        expiringItemsRecyclerView
+                .setNestedScrollingEnabled(false);
 
         expiringItemAdapter =
-                new ExpiringItemAdapter(expiringItems);
+                new ExpiringItemAdapter(
+                        expiringItems
+                );
 
         expiringItemsRecyclerView.setAdapter(
                 expiringItemAdapter
         );
 
-        // Low-stock items list
-        lowStockItemsRecyclerView =
-                findViewById(R.id.lowStockItemsRecyclerView);
-
         lowStockItemsRecyclerView.setLayoutManager(
                 new LinearLayoutManager(this)
         );
 
-        lowStockItemsRecyclerView.setNestedScrollingEnabled(
-                false
-        );
+        lowStockItemsRecyclerView
+                .setNestedScrollingEnabled(false);
 
         lowStockItemAdapter =
-                new LowStockItemAdapter(lowStockItems);
+                new LowStockItemAdapter(
+                        lowStockItems
+                );
 
         lowStockItemsRecyclerView.setAdapter(
                 lowStockItemAdapter
         );
+    }
 
-        // Firebase
-        databaseReference = FirebaseDatabase
-                .getInstance(
-                        "https://smart-pantry-manager-7e502-default-rtdb.europe-west1.firebasedatabase.app/"
-                )
-                .getReference();
+    private void setupNavigation() {
 
-        loadDashboardStatistics();
-
-        // Add pantry item
-        findViewById(R.id.addItemCard)
-                .setOnClickListener(v -> {
-
-                    Intent intent = new Intent(
-                            MainActivity.this,
-                            AddItemActivity.class
-                    );
-
-                    startActivity(intent);
-                });
-
-        // Open inventory
         findViewById(R.id.inventoryCard)
                 .setOnClickListener(v -> {
 
-                    Intent intent = new Intent(
-                            MainActivity.this,
-                            InventoryActivity.class
-                    );
+                    Intent intent =
+                            new Intent(
+                                    MainActivity.this,
+                                    InventoryActivity.class
+                            );
 
                     startActivity(intent);
                 });
 
-        // Open shopping list
+        findViewById(R.id.addItemCard)
+                .setOnClickListener(v -> {
+
+                    Intent intent =
+                            new Intent(
+                                    MainActivity.this,
+                                    AddItemActivity.class
+                            );
+
+                    startActivity(intent);
+                });
+
         findViewById(R.id.shoppingListCard)
                 .setOnClickListener(v -> {
 
-                    Intent intent = new Intent(
-                            MainActivity.this,
-                            ShoppingListActivity.class
-                    );
+                    Intent intent =
+                            new Intent(
+                                    MainActivity.this,
+                                    ShoppingListActivity.class
+                            );
+
+                    startActivity(intent);
+                });
+
+        findViewById(R.id.recipeFinderCard)
+                .setOnClickListener(v -> {
+
+                    Intent intent =
+                            new Intent(
+                                    MainActivity.this,
+                                    RecipeListActivity.class
+                            );
 
                     startActivity(intent);
                 });
     }
 
-    private void loadDashboardStatistics() {
+    private void loadPantryItems() {
 
-        databaseReference
-                .child("pantry_items")
-                .addValueEventListener(
-                        new ValueEventListener() {
-
-                            @Override
-                            public void onDataChange(
-                                    @NonNull DataSnapshot snapshot
-                            ) {
-
-                                int totalItems = 0;
-                                int lowStockItemsCount = 0;
-                                int expiringSoonItems = 0;
-
-                                expiringItems.clear();
-                                lowStockItems.clear();
-
-                                for (DataSnapshot itemSnapshot
-                                        : snapshot.getChildren()) {
-
-                                    PantryItem item =
-                                            itemSnapshot.getValue(
-                                                    PantryItem.class
-                                            );
-
-                                    if (item == null) {
-                                        continue;
-                                    }
-
-                                    totalItems++;
-
-                                    // Check low stock
-                                    if (item.getQuantity()
-                                            <= item.getLowStockLevel()) {
-
-                                        lowStockItemsCount++;
-
-                                        lowStockItems.add(item);
-                                    }
-
-                                    // Check expiry
-                                    if (isExpiringSoon(
-                                            item.getExpiryDate()
-                                    )) {
-
-                                        expiringSoonItems++;
-
-                                        expiringItems.add(item);
-                                    }
-                                }
-
-                                // Sort expiring items
-                                // by closest expiry date
-                                sortExpiringItems();
-
-                                // Update dashboard numbers
-                                totalItemsCount.setText(
-                                        String.valueOf(totalItems)
-                                );
-
-                                lowStockCount.setText(
-                                        String.valueOf(
-                                                lowStockItemsCount
-                                        )
-                                );
-
-                                expiringSoonCount.setText(
-                                        String.valueOf(
-                                                expiringSoonItems
-                                        )
-                                );
-
-                                // Update low-stock message
-                                updateLowStockMessage(
-                                        lowStockItemsCount
-                                );
-
-                                // Update expiring items
-                                expiringItemAdapter
-                                        .notifyDataSetChanged();
-
-                                updateExpiringItemsVisibility();
-
-                                // Update low-stock items
-                                lowStockItemAdapter
-                                        .notifyDataSetChanged();
-
-                                updateLowStockItemsVisibility();
-                            }
-
-                            @Override
-                            public void onCancelled(
-                                    @NonNull DatabaseError error
-                            ) {
-
-                                Toast.makeText(
-                                        MainActivity.this,
-                                        "Could not load dashboard data: "
-                                                + error.getMessage(),
-                                        Toast.LENGTH_LONG
-                                ).show();
-                            }
-                        }
-                );
-    }
-
-    private boolean isExpiringSoon(
-            String expiryDate
-    ) {
-
-        if (expiryDate == null
-                || expiryDate.trim().isEmpty()) {
-
-            return false;
-        }
-
-        SimpleDateFormat dateFormat =
-                new SimpleDateFormat(
-                        "yyyy-MM-dd",
-                        Locale.getDefault()
-                );
-
-        dateFormat.setLenient(false);
-
-        try {
-
-            Date expiry =
-                    dateFormat.parse(expiryDate);
-
-            if (expiry == null) {
-                return false;
-            }
-
-            Calendar today =
-                    Calendar.getInstance();
-
-            today.set(
-                    Calendar.HOUR_OF_DAY,
-                    0
-            );
-
-            today.set(
-                    Calendar.MINUTE,
-                    0
-            );
-
-            today.set(
-                    Calendar.SECOND,
-                    0
-            );
-
-            today.set(
-                    Calendar.MILLISECOND,
-                    0
-            );
-
-            Calendar sevenDaysFromNow =
-                    (Calendar) today.clone();
-
-            sevenDaysFromNow.add(
-                    Calendar.DAY_OF_YEAR,
-                    7
-            );
-
-            return !expiry.before(
-                    today.getTime()
-            )
-                    && !expiry.after(
-                    sevenDaysFromNow.getTime()
-            );
-
-        } catch (ParseException e) {
-
-            return false;
-        }
-    }
-
-    private void sortExpiringItems() {
-
-        SimpleDateFormat dateFormat =
-                new SimpleDateFormat(
-                        "yyyy-MM-dd",
-                        Locale.getDefault()
-                );
-
-        Collections.sort(
-                expiringItems,
-                new Comparator<PantryItem>() {
+        databaseReference.addValueEventListener(
+                new ValueEventListener() {
 
                     @Override
-                    public int compare(
-                            PantryItem first,
-                            PantryItem second
+                    public void onDataChange(
+                            @NonNull DataSnapshot snapshot
                     ) {
 
-                        try {
+                        pantryItems.clear();
 
-                            Date firstDate =
-                                    dateFormat.parse(
-                                            first.getExpiryDate()
+                        for (
+                                DataSnapshot itemSnapshot :
+                                snapshot.getChildren()
+                        ) {
+
+                            PantryItem item =
+                                    itemSnapshot.getValue(
+                                            PantryItem.class
                                     );
 
-                            Date secondDate =
-                                    dateFormat.parse(
-                                            second.getExpiryDate()
-                                    );
-
-                            if (firstDate == null
-                                    || secondDate == null) {
-
-                                return 0;
+                            if (item == null) {
+                                continue;
                             }
 
-                            return firstDate.compareTo(
-                                    secondDate
-                            );
+                            if (
+                                    item.getId() == null
+                                            || item.getId().isEmpty()
+                            ) {
 
-                        } catch (ParseException e) {
+                                item.setId(
+                                        itemSnapshot.getKey()
+                                );
+                            }
 
-                            return 0;
+                            pantryItems.add(item);
                         }
+
+                        updateDashboard();
+                    }
+
+                    @Override
+                    public void onCancelled(
+                            @NonNull DatabaseError error
+                    ) {
+
+                        Toast.makeText(
+                                MainActivity.this,
+                                "Could not load pantry data: "
+                                        + error.getMessage(),
+                                Toast.LENGTH_LONG
+                        ).show();
                     }
                 }
         );
     }
 
-    private void updateExpiringItemsVisibility() {
+    private void updateDashboard() {
 
-        /*
-         * emptyExpiryCard is a MaterialCardView,
-         * so we use View instead of TextView.
-         */
-        View emptyExpiryCard =
-                findViewById(R.id.emptyExpiryCard);
+        totalItemsCount.setText(
+                String.valueOf(
+                        pantryItems.size()
+                )
+        );
+
+        updateExpiringItems();
+
+        updateLowStockItems();
+    }
+
+    private void updateExpiringItems() {
+
+        expiringItems.clear();
+
+        Calendar today =
+                Calendar.getInstance();
+
+        Calendar sevenDaysFromNow =
+                Calendar.getInstance();
+
+        sevenDaysFromNow.add(
+                Calendar.DAY_OF_YEAR,
+                7
+        );
+
+        for (PantryItem item : pantryItems) {
+
+            String expiryDateText =
+                    item.getExpiryDate();
+
+            if (
+                    expiryDateText == null
+                            || expiryDateText.isEmpty()
+            ) {
+                continue;
+            }
+
+            try {
+
+                Date expiryDate =
+                        dateFormat.parse(
+                                expiryDateText
+                        );
+
+                if (expiryDate == null) {
+                    continue;
+                }
+
+                Calendar expiryCalendar =
+                        Calendar.getInstance();
+
+                expiryCalendar.setTime(
+                        expiryDate
+                );
+
+                if (
+                        !expiryCalendar.before(today)
+                                && !expiryCalendar.after(
+                                sevenDaysFromNow
+                        )
+                ) {
+
+                    expiringItems.add(item);
+                }
+
+            } catch (ParseException ignored) {
+                // Ignore invalid expiry dates
+            }
+        }
+
+        expiringSoonCount.setText(
+                String.valueOf(
+                        expiringItems.size()
+                )
+        );
+
+        expiringItemAdapter.notifyDataSetChanged();
 
         if (expiringItems.isEmpty()) {
 
@@ -415,13 +360,33 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void updateLowStockItemsVisibility() {
+    private void updateLowStockItems() {
 
-        View emptyLowStockCard =
-                findViewById(R.id.emptyLowStockCard);
+        lowStockItems.clear();
+
+        for (PantryItem item : pantryItems) {
+
+            if (
+                    item.getQuantity()
+                            <= item.getLowStockLevel()
+            ) {
+
+                lowStockItems.add(item);
+            }
+        }
+
+        lowStockCount.setText(
+                String.valueOf(
+                        lowStockItems.size()
+                )
+        );
 
         if (lowStockItems.isEmpty()) {
 
+            lowStockDescription.setText(
+                    "Items that need attention"
+            );
+
             lowStockItemsRecyclerView.setVisibility(
                     View.GONE
             );
@@ -432,6 +397,10 @@ public class MainActivity extends AppCompatActivity {
 
         } else {
 
+            lowStockDescription.setText(
+                    "These items are running low"
+            );
+
             lowStockItemsRecyclerView.setVisibility(
                     View.VISIBLE
             );
@@ -440,51 +409,7 @@ public class MainActivity extends AppCompatActivity {
                     View.GONE
             );
         }
-    }
 
-    private void updateLowStockMessage(
-            int lowStockItems
-    ) {
-
-        if (lowStockItems == 0) {
-
-            lowStockMessage.setText(
-                    "Everything is stocked"
-            );
-
-            lowStockDescription.setText(
-                    "No low-stock items yet."
-            );
-
-        } else if (lowStockItems == 1) {
-
-            lowStockMessage.setText(
-                    "1 item needs attention"
-            );
-
-            lowStockDescription.setText(
-                    "One pantry item is running low."
-            );
-
-        } else {
-
-            lowStockMessage.setText(
-                    lowStockItems
-                            + " items need attention"
-            );
-
-            lowStockDescription.setText(
-                    "Some pantry items are running low."
-            );
-        }
-    }
-
-    @Override
-    protected void onResume() {
-
-        super.onResume();
-
-        // Firebase keeps the dashboard
-        // automatically updated.
+        lowStockItemAdapter.notifyDataSetChanged();
     }
 }

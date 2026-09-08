@@ -4,21 +4,19 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F7F8F3"
-    tools:context=".MainActivity">
+    android:background="#F7F8F3">
 
-    <!-- Main scrolling content -->
     <ScrollView
-        android:id="@+id/dashboardScroll"
+        android:id="@+id/dashboardScrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
-        android:overScrollMode="never"
+        android:clipToPadding="false"
+        android:paddingBottom="90dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNavigation"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -29,247 +27,203 @@
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
             android:paddingTop="24dp"
-            android:paddingBottom="28dp">
+            android:paddingBottom="30dp">
 
             <!-- Header -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Good afternoon 👋"
-                        android:textColor="#6B756D"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="3dp"
-                        android:text="Smart Pantry"
-                        android:textColor="#17231B"
-                        android:textSize="28sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-                <!-- Profile -->
                 <TextView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:background="@drawable/profile_circle"
-                    android:gravity="center"
-                    android:text="👤"
-                    android:textSize="20sp" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Smart Pantry"
+                    android:textColor="#27352B"
+                    android:textSize="28sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Manage your pantry with ease"
+                    android:textColor="#7A857E"
+                    android:textSize="14sp" />
 
             </LinearLayout>
-
 
             <!-- Search -->
-            <LinearLayout
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
-                android:layout_marginTop="22dp"
-                android:background="@drawable/search_background"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="⌕"
-                    android:textColor="#69756D"
-                    android:textSize="25sp" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_weight="1"
-                    android:text="Search your pantry..."
-                    android:textColor="#89928C"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="☷"
-                    android:textColor="#55735D"
-                    android:textSize="22sp" />
-
-            </LinearLayout>
-
-
-            <!-- Overview title -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Pantry overview"
-                    android:textColor="#17231B"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="View all"
-                    android:textColor="#477654"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-
-            <!-- Statistics cards -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:orientation="horizontal">
-
-                <!-- Total items -->
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/inventoryCard"
-                    android:layout_width="0dp"
-                    android:layout_height="145dp"
-                    android:layout_marginEnd="7dp"
-                    android:layout_weight="1"
-                    app:cardBackgroundColor="#E6F2E8"
-                    app:cardCornerRadius="22dp"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="0dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:padding="16dp">
-
-                        <TextView
-                            android:layout_width="42dp"
-                            android:layout_height="42dp"
-                            android:background="@drawable/icon_circle_green"
-                            android:gravity="center"
-                            android:text="📦"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/totalItemsCount"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
-                            android:text="0"
-                            android:textColor="#173D25"
-                            android:textSize="25sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Total items"
-                            android:textColor="#587060"
-                            android:textSize="13sp" />
-
-                    </LinearLayout>
-
-                </com.google.android.material.card.MaterialCardView>
-
-
-                <!-- Expiring -->
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="145dp"
-                    android:layout_marginStart="7dp"
-                    android:layout_weight="1"
-                    app:cardBackgroundColor="#FFF1D9"
-                    app:cardCornerRadius="22dp"
-                    app:cardElevation="0dp"
-                    app:strokeWidth="0dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:padding="16dp">
-
-                        <TextView
-                            android:layout_width="42dp"
-                            android:layout_height="42dp"
-                            android:background="@drawable/icon_circle_orange"
-                            android:gravity="center"
-                            android:text="⏰"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/expiringSoonCount"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
-                            android:text="0"
-                            android:textColor="#704C15"
-                            android:textSize="25sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Expiring soon"
-                            android:textColor="#846B42"
-                            android:textSize="13sp" />
-
-                    </LinearLayout>
-
-                </com.google.android.material.card.MaterialCardView>
-
-            </LinearLayout>
-
-
-            <!-- Add item button -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/addItemCard"
-                android:layout_width="match_parent"
-                android:layout_height="68dp"
-                android:layout_marginTop="16dp"
-                app:cardBackgroundColor="#244E32"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="0dp"
-                app:strokeWidth="0dp">
+                android:layout_marginTop="20dp"
+                android:backgroundTint="#FFFFFF"
+                android:elevation="0dp"
+                app:cardCornerRadius="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:paddingStart="20dp"
-                    android:paddingEnd="20dp">
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
 
                     <TextView
-                        android:layout_width="42dp"
-                        android:layout_height="42dp"
-                        android:background="@drawable/add_circle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="⌕"
+                        android:textColor="#5B6B61"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:id="@+id/searchHint"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:text="Search pantry items..."
+                        android:textColor="#9AA39D"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Overview -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="26dp"
+                android:text="Overview"
+                android:textColor="#27352B"
+                android:textSize="19sp"
+                android:textStyle="bold" />
+
+            <!-- Statistics -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
+
+                <!-- Total items -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/inventoryCard"
+                    android:layout_width="0dp"
+                    android:layout_height="125dp"
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="#FFFFFF"
+                    android:elevation="0dp"
+                    app:cardCornerRadius="18dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="📦"
+                            android:textSize="25sp" />
+
+                        <TextView
+                            android:id="@+id/totalItemsCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:text="0"
+                            android:textColor="#27352B"
+                            android:textSize="24sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Total Items"
+                            android:textColor="#7A857E"
+                            android:textSize="12sp" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <!-- Expiring soon -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/expiringCard"
+                    android:layout_width="0dp"
+                    android:layout_height="125dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="#FFFFFF"
+                    android:elevation="0dp"
+                    app:cardCornerRadius="18dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="⏰"
+                            android:textSize="25sp" />
+
+                        <TextView
+                            android:id="@+id/expiringSoonCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:text="0"
+                            android:textColor="#27352B"
+                            android:textSize="24sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Expiring Soon"
+                            android:textColor="#7A857E"
+                            android:textSize="12sp" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+            <!-- Add pantry item -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/addItemCard"
+                android:layout_width="match_parent"
+                android:layout_height="78dp"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="#EAF3EC"
+                android:elevation="0dp"
+                app:cardCornerRadius="18dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="18dp"
+                    android:paddingEnd="18dp">
+
+                    <TextView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/icon_circle_green"
                         android:gravity="center"
                         android:text="+"
-                        android:textColor="#244E32"
-                        android:textSize="27sp"
+                        android:textColor="#2F6B42"
+                        android:textSize="25sp"
                         android:textStyle="bold" />
 
                     <LinearLayout
@@ -282,17 +236,17 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Add pantry item"
-                            android:textColor="#FFFFFF"
+                            android:text="Add Pantry Item"
+                            android:textColor="#27352B"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="Keep your pantry up to date"
-                            android:textColor="#C9DCCF"
+                            android:layout_marginTop="3dp"
+                            android:text="Add food to your inventory"
+                            android:textColor="#7A857E"
                             android:textSize="12sp" />
 
                     </LinearLayout>
@@ -301,40 +255,38 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="›"
-                        android:textColor="#FFFFFF"
-                        android:textSize="30sp" />
+                        android:textColor="#839087"
+                        android:textSize="28sp" />
 
                 </LinearLayout>
 
-            </com.google.android.material.card.MaterialCardView>
+            </androidx.cardview.widget.CardView>
 
-
-            <!-- Shopping List button -->
-            <com.google.android.material.card.MaterialCardView
+            <!-- Shopping List -->
+            <androidx.cardview.widget.CardView
                 android:id="@+id/shoppingListCard"
                 android:layout_width="match_parent"
-                android:layout_height="68dp"
+                android:layout_height="78dp"
                 android:layout_marginTop="12dp"
-                app:cardBackgroundColor="#E6F2E8"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="0dp"
-                app:strokeWidth="0dp">
+                android:backgroundTint="#EAF3EC"
+                android:elevation="0dp"
+                app:cardCornerRadius="18dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:paddingStart="20dp"
-                    android:paddingEnd="20dp">
+                    android:paddingStart="18dp"
+                    android:paddingEnd="18dp">
 
                     <TextView
-                        android:layout_width="42dp"
-                        android:layout_height="42dp"
-                        android:background="@drawable/low_stock_circle"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/icon_circle_green"
                         android:gravity="center"
                         android:text="🛒"
-                        android:textSize="21sp" />
+                        android:textSize="22sp" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -354,9 +306,9 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
+                            android:layout_marginTop="3dp"
                             android:text="Manage items you need to buy"
-                            android:textColor="#6B756D"
+                            android:textColor="#7A857E"
                             android:textSize="12sp" />
 
                     </LinearLayout>
@@ -365,19 +317,80 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="›"
-                        android:textColor="#55735D"
-                        android:textSize="30sp" />
+                        android:textColor="#839087"
+                        android:textSize="28sp" />
 
                 </LinearLayout>
 
-            </com.google.android.material.card.MaterialCardView>
+            </androidx.cardview.widget.CardView>
 
+            <!-- Recipe Finder -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/recipeFinderCard"
+                android:layout_width="match_parent"
+                android:layout_height="78dp"
+                android:layout_marginTop="12dp"
+                android:backgroundTint="#EAF3EC"
+                android:elevation="0dp"
+                app:cardCornerRadius="18dp">
 
-            <!-- Expiring soon -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="18dp"
+                    android:paddingEnd="18dp">
+
+                    <TextView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/icon_circle_green"
+                        android:gravity="center"
+                        android:text="🍳"
+                        android:textSize="22sp" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Recipe Finder"
+                            android:textColor="#27352B"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:text="Find recipes from your pantry"
+                            android:textColor="#7A857E"
+                            android:textSize="12sp" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="›"
+                        android:textColor="#839087"
+                        android:textSize="28sp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Expiring Soon heading -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="26dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -385,239 +398,124 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Expiring soon"
-                    android:textColor="#17231B"
-                    android:textSize="20sp"
+                    android:text="Expiring Soon"
+                    android:textColor="#27352B"
+                    android:textSize="19sp"
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/lowStockMessage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="See all"
-                    android:textColor="#477654"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:text=""
+                    android:textColor="#7A857E"
+                    android:textSize="12sp" />
 
             </LinearLayout>
 
-
-            <!-- Expiring items list -->
+            <!-- Expiring items -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/expiringItemsRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:nestedScrollingEnabled="false"
-                android:overScrollMode="never"
-                tools:itemCount="2"
                 tools:listitem="@layout/item_expiring" />
 
-
-            <!-- Empty expiry state -->
+            <!-- Empty expiring state -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/emptyExpiryCard"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:visibility="gone"
                 app:cardBackgroundColor="#FFFFFF"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="0dp"
-                app:strokeColor="#E7EBE7"
-                app:strokeWidth="1dp">
+                app:cardCornerRadius="18dp"
+                app:strokeWidth="0dp">
 
-                <LinearLayout
+                <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="18dp">
-
-                    <TextView
-                        android:layout_width="55dp"
-                        android:layout_height="55dp"
-                        android:background="@drawable/empty_circle"
-                        android:gravity="center"
-                        android:text="✨"
-                        android:textSize="23sp" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="15dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Your pantry is fresh!"
-                            android:textColor="#27352B"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="No items are close to expiry."
-                            android:textColor="#7A857E"
-                            android:textSize="13sp" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="24dp"
+                    android:text="No items are expiring soon."
+                    android:textColor="#7A857E"
+                    android:textSize="13sp" />
 
             </com.google.android.material.card.MaterialCardView>
 
-
-            <!-- Low stock heading -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:text="Low stock"
-                android:textColor="#17231B"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-
-            <!-- Low stock summary -->
-            <com.google.android.material.card.MaterialCardView
+            <!-- Low Stock heading -->
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="105dp"
-                android:layout_marginTop="12dp"
-                app:cardBackgroundColor="#FFFFFF"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="0dp"
-                app:strokeColor="#E7EBE7"
-                app:strokeWidth="1dp">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="26dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="18dp">
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
                     <TextView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:background="@drawable/low_stock_circle"
-                        android:gravity="center"
-                        android:text="🛒"
-                        android:textSize="20sp" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="15dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/lowStockMessage"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Everything is stocked"
-                            android:textColor="#27352B"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/lowStockDescription"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="3dp"
-                            android:text="No low-stock items yet."
-                            android:textColor="#7A857E"
-                            android:textSize="13sp" />
-
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/lowStockCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
-                        android:text="0"
-                        android:textColor="#B45309"
-                        android:textSize="22sp"
+                        android:text="Low Stock"
+                        android:textColor="#27352B"
+                        android:textSize="19sp"
                         android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/lowStockDescription"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:text="Items that need attention"
+                        android:textColor="#7A857E"
+                        android:textSize="12sp" />
 
                 </LinearLayout>
 
-            </com.google.android.material.card.MaterialCardView>
+                <TextView
+                    android:id="@+id/lowStockCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="#2F6B42"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
+            </LinearLayout>
 
-            <!-- Low stock items list -->
+            <!-- Low stock items -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/lowStockItemsRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:nestedScrollingEnabled="false"
-                android:overScrollMode="never"
-                tools:itemCount="2"
                 tools:listitem="@layout/item_low_stock" />
 
-
-            <!-- Empty low-stock state -->
+            <!-- Empty low stock state -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/emptyLowStockCard"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:visibility="gone"
                 app:cardBackgroundColor="#FFFFFF"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="0dp"
-                app:strokeColor="#E7EBE7"
-                app:strokeWidth="1dp">
+                app:cardCornerRadius="18dp"
+                app:strokeWidth="0dp">
 
-                <LinearLayout
+                <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="18dp">
-
-                    <TextView
-                        android:layout_width="55dp"
-                        android:layout_height="55dp"
-                        android:background="@drawable/empty_circle"
-                        android:gravity="center"
-                        android:text="✓"
-                        android:textColor="#2F6B42"
-                        android:textSize="24sp"
-                        android:textStyle="bold" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="15dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Stock levels look good!"
-                            android:textColor="#27352B"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="No pantry items are running low."
-                            android:textColor="#7A857E"
-                            android:textSize="13sp" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="24dp"
+                    android:text="Your pantry stock levels look good."
+                    android:textColor="#7A857E"
+                    android:textSize="13sp" />
 
             </com.google.android.material.card.MaterialCardView>
 
@@ -625,18 +523,13 @@
 
     </ScrollView>
 
-
-    <!-- Bottom navigation -->
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/bottomNavigation"
+    <!-- Bottom Navigation -->
+    <androidx.cardview.widget.CardView
         android:layout_width="0dp"
-        android:layout_height="76dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginBottom="10dp"
-        app:cardBackgroundColor="#FFFFFF"
-        app:cardCornerRadius="25dp"
-        app:cardElevation="8dp"
+        android:layout_height="70dp"
+        android:backgroundTint="#FFFFFF"
+        android:elevation="8dp"
+        app:cardCornerRadius="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -647,130 +540,58 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <!-- Home -->
-            <LinearLayout
+            <TextView
+                android:id="@+id/homeNav"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:text="⌂\nHome"
+                android:textColor="#2F6B42"
+                android:textSize="12sp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="⌂"
-                    android:textColor="#2F6B42"
-                    android:textSize="25sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Home"
-                    android:textColor="#2F6B42"
-                    android:textSize="11sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-
-            <!-- Pantry -->
-            <LinearLayout
+            <TextView
+                android:id="@+id/pantryNav"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:text="▣\nPantry"
+                android:textColor="#7A857E"
+                android:textSize="12sp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="▣"
-                    android:textColor="#89938C"
-                    android:textSize="22sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Pantry"
-                    android:textColor="#89938C"
-                    android:textSize="11sp" />
-
-            </LinearLayout>
-
-
-            <!-- Add -->
-            <LinearLayout
+            <TextView
+                android:id="@+id/addNav"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:text="+\nAdd"
+                android:textColor="#7A857E"
+                android:textSize="12sp" />
 
-                <TextView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:background="@drawable/bottom_add"
-                    android:gravity="center"
-                    android:text="+"
-                    android:textColor="#FFFFFF"
-                    android:textSize="27sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-
-            <!-- Alerts -->
-            <LinearLayout
+            <TextView
+                android:id="@+id/alertsNav"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:text="⚠\nAlerts"
+                android:textColor="#7A857E"
+                android:textSize="12sp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="♡"
-                    android:textColor="#89938C"
-                    android:textSize="23sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Alerts"
-                    android:textColor="#89938C"
-                    android:textSize="11sp" />
-
-            </LinearLayout>
-
-
-            <!-- Profile -->
-            <LinearLayout
+            <TextView
+                android:id="@+id/profileNav"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="◉"
-                    android:textColor="#89938C"
-                    android:textSize="22sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Profile"
-                    android:textColor="#89938C"
-                    android:textSize="11sp" />
-
-            </LinearLayout>
+                android:text="●\nProfile"
+                android:textColor="#7A857E"
+                android:textSize="12sp" />
 
         </LinearLayout>
 
-    </com.google.android.material.card.MaterialCardView>
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

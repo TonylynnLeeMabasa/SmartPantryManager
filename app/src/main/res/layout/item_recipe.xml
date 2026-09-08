@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    android:backgroundTint="#FFFFFF"
+    android:elevation="0dp"
+    android:radius="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <!-- Recipe icon -->
+        <TextView
+            android:id="@+id/recipeIcon"
+            android:layout_width="58dp"
+            android:layout_height="58dp"
+            android:background="@drawable/icon_circle_green"
+            android:gravity="center"
+            android:text="🍳"
+            android:textSize="25sp" />
+
+        <!-- Recipe information -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/recipeName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chicken Fried Rice"
+                android:textColor="#27352B"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/recipeDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:maxLines="2"
+                android:text="A quick and tasty rice meal."
+                android:textColor="#7A857E"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/recipeMatchStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:text="✓ You can make this"
+                android:textColor="#2F6B42"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <!-- Arrow -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="›"
+            android:textColor="#839087"
+            android:textSize="28sp" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
