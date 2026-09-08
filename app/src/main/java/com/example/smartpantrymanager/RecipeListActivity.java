@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,13 +34,21 @@ public class RecipeListActivity extends AppCompatActivity {
 
     private TextView recipeCountText;
 
+    private MaterialButton allRecipesButton;
+    private MaterialButton canMakeButton;
+
     private final List<Recipe> recipes =
+            new ArrayList<>();
+
+    private final List<Recipe> displayedRecipes =
             new ArrayList<>();
 
     private final List<PantryItem> pantryItems =
             new ArrayList<>();
 
     private RecipeMatcher recipeMatcher;
+
+    private boolean showingCanMakeOnly = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +68,7 @@ public class RecipeListActivity extends AppCompatActivity {
         );
 
         recipeRecyclerView.setNestedScrollingEnabled(
-                true
+                false
         );
 
         emptyRecipeCard =
@@ -72,12 +81,22 @@ public class RecipeListActivity extends AppCompatActivity {
                         R.id.recipeCountText
                 );
 
+        allRecipesButton =
+                findViewById(
+                        R.id.allRecipesButton
+                );
+
+        canMakeButton =
+                findViewById(
+                        R.id.canMakeButton
+                );
+
         recipeMatcher =
                 new RecipeMatcher();
 
         recipeAdapter =
                 new RecipeAdapter(
-                        recipes,
+                        displayedRecipes,
                         pantryItems,
                         recipeMatcher
                 );
@@ -111,8 +130,37 @@ public class RecipeListActivity extends AppCompatActivity {
                 v -> finish()
         );
 
+        allRecipesButton.setOnClickListener(
+                v -> {
+
+                    showingCanMakeOnly = false;
+
+                    updateDisplayedRecipes();
+
+                    updateFilterButtons();
+                }
+        );
+
+        canMakeButton.setOnClickListener(
+                v -> {
+
+                    showingCanMakeOnly = true;
+
+                    updateDisplayedRecipes();
+
+                    updateFilterButtons();
+                }
+        );
+
+        /*
+         * Load the preloaded recipes.
+         */
         loadRecipes();
 
+        /*
+         * Load the current pantry so recipes
+         * can be matched against real quantities.
+         */
         loadPantryItems();
     }
 
@@ -155,9 +203,7 @@ public class RecipeListActivity extends AppCompatActivity {
                             recipes.add(recipe);
                         }
 
-                        recipeAdapter.notifyDataSetChanged();
-
-                        updateRecipeVisibility();
+                        updateDisplayedRecipes();
                     }
 
                     @Override
@@ -215,7 +261,11 @@ public class RecipeListActivity extends AppCompatActivity {
                             pantryItems.add(item);
                         }
 
-                        recipeAdapter.notifyDataSetChanged();
+                        /*
+                         * Recalculate the displayed recipes
+                         * because pantry quantities may have changed.
+                         */
+                        updateDisplayedRecipes();
                     }
 
                     @Override
@@ -234,10 +284,38 @@ public class RecipeListActivity extends AppCompatActivity {
         );
     }
 
+    private void updateDisplayedRecipes() {
+
+        displayedRecipes.clear();
+
+        for (Recipe recipe : recipes) {
+
+            RecipeMatcher.MatchResult result =
+                    recipeMatcher.checkRecipe(
+                            recipe,
+                            pantryItems
+                    );
+
+            if (!showingCanMakeOnly
+                    || result.canMake()) {
+
+                displayedRecipes.add(
+                        recipe
+                );
+            }
+        }
+
+        recipeAdapter.notifyDataSetChanged();
+
+        updateRecipeVisibility();
+
+        updateFilterButtons();
+    }
+
     private void updateRecipeVisibility() {
 
         int recipeCount =
-                recipes.size();
+                displayedRecipes.size();
 
         recipeCountText.setText(
                 recipeCount
@@ -246,7 +324,7 @@ public class RecipeListActivity extends AppCompatActivity {
                         : " recipes")
         );
 
-        if (recipes.isEmpty()) {
+        if (displayedRecipes.isEmpty()) {
 
             recipeRecyclerView.setVisibility(
                     View.GONE
@@ -264,6 +342,54 @@ public class RecipeListActivity extends AppCompatActivity {
 
             emptyRecipeCard.setVisibility(
                     View.GONE
+            );
+        }
+    }
+
+    private void updateFilterButtons() {
+
+        if (showingCanMakeOnly) {
+
+            allRecipesButton.setBackgroundTintList(
+                    android.content.res.ColorStateList.valueOf(
+                            0xFFFFFFFF
+                    )
+            );
+
+            allRecipesButton.setTextColor(
+                    0xFF2F6B42
+            );
+
+            canMakeButton.setBackgroundTintList(
+                    android.content.res.ColorStateList.valueOf(
+                            0xFF2F6B42
+                    )
+            );
+
+            canMakeButton.setTextColor(
+                    0xFFFFFFFF
+            );
+
+        } else {
+
+            allRecipesButton.setBackgroundTintList(
+                    android.content.res.ColorStateList.valueOf(
+                            0xFF2F6B42
+                    )
+            );
+
+            allRecipesButton.setTextColor(
+                    0xFFFFFFFF
+            );
+
+            canMakeButton.setBackgroundTintList(
+                    android.content.res.ColorStateList.valueOf(
+                            0xFFFFFFFF
+                    )
+            );
+
+            canMakeButton.setTextColor(
+                    0xFF2F6B42
             );
         }
     }

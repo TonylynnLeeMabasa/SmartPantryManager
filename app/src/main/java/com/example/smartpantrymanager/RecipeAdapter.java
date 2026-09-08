@@ -80,8 +80,17 @@ public class RecipeAdapter
 
         } else {
 
+            int missingCount =
+                    matchResult
+                            .getMissingIngredients()
+                            .size();
+
             holder.recipeMatchStatus.setText(
-                    "⚠ Missing ingredients"
+                    "⚠ "
+                            + missingCount
+                            + (missingCount == 1
+                            ? " ingredient missing"
+                            : " ingredients missing")
             );
 
             holder.recipeMatchStatus.setTextColor(
