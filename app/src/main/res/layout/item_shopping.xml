@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:backgroundTint="#FFFFFF"
+    android:elevation="0dp"
+    android:radius="18dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <!-- Purchased checkbox -->
+        <CheckBox
+            android:id="@+id/purchasedCheckBox"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:buttonTint="#2F6B42"
+            android:contentDescription="Mark item as purchased"
+            android:gravity="center" />
+
+        <!-- Shopping item information -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/shoppingItemName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bread"
+                android:textColor="#27352B"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/shoppingItemQuantity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="Quantity: 2"
+                android:textColor="#7A857E"
+                android:textSize="13sp" />
+
+        </LinearLayout>
+
+        <!-- Delete button -->
+        <TextView
+            android:id="@+id/deleteShoppingItemButton"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@drawable/empty_circle"
+            android:contentDescription="Delete shopping item"
+            android:gravity="center"
+            android:text="×"
+            android:textColor="#B45353"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

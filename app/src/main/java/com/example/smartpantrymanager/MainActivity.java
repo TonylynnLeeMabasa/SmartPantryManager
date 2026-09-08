@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
         loadDashboardStatistics();
 
-        // Add item
+        // Add pantry item
         findViewById(R.id.addItemCard)
                 .setOnClickListener(v -> {
 
@@ -131,13 +131,25 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                 });
 
-        // Inventory
+        // Open inventory
         findViewById(R.id.inventoryCard)
                 .setOnClickListener(v -> {
 
                     Intent intent = new Intent(
                             MainActivity.this,
                             InventoryActivity.class
+                    );
+
+                    startActivity(intent);
+                });
+
+        // Open shopping list
+        findViewById(R.id.shoppingListCard)
+                .setOnClickListener(v -> {
+
+                    Intent intent = new Intent(
+                            MainActivity.this,
+                            ShoppingListActivity.class
                     );
 
                     startActivity(intent);

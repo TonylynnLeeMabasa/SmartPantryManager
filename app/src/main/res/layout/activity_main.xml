@@ -309,6 +309,70 @@
             </com.google.android.material.card.MaterialCardView>
 
 
+            <!-- Shopping List button -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/shoppingListCard"
+                android:layout_width="match_parent"
+                android:layout_height="68dp"
+                android:layout_marginTop="12dp"
+                app:cardBackgroundColor="#E6F2E8"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp">
+
+                    <TextView
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
+                        android:background="@drawable/low_stock_circle"
+                        android:gravity="center"
+                        android:text="🛒"
+                        android:textSize="21sp" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Shopping List"
+                            android:textColor="#27352B"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="Manage items you need to buy"
+                            android:textColor="#6B756D"
+                            android:textSize="12sp" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="›"
+                        android:textColor="#55735D"
+                        android:textSize="30sp" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
             <!-- Expiring soon -->
             <LinearLayout
                 android:layout_width="match_parent"
