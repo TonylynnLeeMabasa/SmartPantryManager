@@ -15,9 +15,17 @@ public class RecipeAdapter
         extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
 
     private final List<Recipe> recipes;
+    private final List<PantryItem> pantryItems;
+    private final RecipeMatcher recipeMatcher;
 
-    public RecipeAdapter(List<Recipe> recipes) {
+    public RecipeAdapter(
+            List<Recipe> recipes,
+            List<PantryItem> pantryItems,
+            RecipeMatcher recipeMatcher
+    ) {
         this.recipes = recipes;
+        this.pantryItems = pantryItems;
+        this.recipeMatcher = recipeMatcher;
     }
 
     @NonNull
@@ -54,9 +62,32 @@ public class RecipeAdapter
                 recipe.getDescription()
         );
 
-        holder.recipeMatchStatus.setText(
-                "Tap to view recipe"
-        );
+        RecipeMatcher.MatchResult matchResult =
+                recipeMatcher.checkRecipe(
+                        recipe,
+                        pantryItems
+                );
+
+        if (matchResult.canMake()) {
+
+            holder.recipeMatchStatus.setText(
+                    "✓ You can make this"
+            );
+
+            holder.recipeMatchStatus.setTextColor(
+                    0xFF2F6B42
+            );
+
+        } else {
+
+            holder.recipeMatchStatus.setText(
+                    "⚠ Missing ingredients"
+            );
+
+            holder.recipeMatchStatus.setTextColor(
+                    0xFF8A5A2B
+            );
+        }
 
         holder.itemView.setOnClickListener(v -> {
 

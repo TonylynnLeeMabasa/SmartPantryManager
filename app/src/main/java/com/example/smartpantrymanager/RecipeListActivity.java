@@ -1,5 +1,6 @@
 package com.example.smartpantrymanager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -23,6 +24,7 @@ import java.util.List;
 public class RecipeListActivity extends AppCompatActivity {
 
     private DatabaseReference databaseReference;
+    private DatabaseReference pantryReference;
 
     private RecyclerView recipeRecyclerView;
     private RecipeAdapter recipeAdapter;
@@ -33,6 +35,11 @@ public class RecipeListActivity extends AppCompatActivity {
 
     private final List<Recipe> recipes =
             new ArrayList<>();
+
+    private final List<PantryItem> pantryItems =
+            new ArrayList<>();
+
+    private RecipeMatcher recipeMatcher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +72,15 @@ public class RecipeListActivity extends AppCompatActivity {
                         R.id.recipeCountText
                 );
 
+        recipeMatcher =
+                new RecipeMatcher();
+
         recipeAdapter =
-                new RecipeAdapter(recipes);
+                new RecipeAdapter(
+                        recipes,
+                        pantryItems,
+                        recipeMatcher
+                );
 
         recipeRecyclerView.setAdapter(
                 recipeAdapter
@@ -80,6 +94,14 @@ public class RecipeListActivity extends AppCompatActivity {
                         .getReference()
                         .child("recipes");
 
+        pantryReference =
+                FirebaseDatabase
+                        .getInstance(
+                                "https://smart-pantry-manager-7e502-default-rtdb.europe-west1.firebasedatabase.app/"
+                        )
+                        .getReference()
+                        .child("pantry_items");
+
         TextView backButton =
                 findViewById(
                         R.id.backButton
@@ -89,17 +111,9 @@ public class RecipeListActivity extends AppCompatActivity {
                 v -> finish()
         );
 
-        /*
-         * Seed the database with the 20
-         * preloaded recipes if the recipes
-         * collection is empty.
-         */
-        RecipeSeeder recipeSeeder =
-                new RecipeSeeder();
-
-        recipeSeeder.seedRecipes(this);
-
         loadRecipes();
+
+        loadPantryItems();
     }
 
     private void loadRecipes() {
@@ -154,6 +168,64 @@ public class RecipeListActivity extends AppCompatActivity {
                         Toast.makeText(
                                 RecipeListActivity.this,
                                 "Could not load recipes: "
+                                        + error.getMessage(),
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
+                }
+        );
+    }
+
+    private void loadPantryItems() {
+
+        pantryReference.addValueEventListener(
+                new ValueEventListener() {
+
+                    @Override
+                    public void onDataChange(
+                            @NonNull DataSnapshot snapshot
+                    ) {
+
+                        pantryItems.clear();
+
+                        for (
+                                DataSnapshot itemSnapshot :
+                                snapshot.getChildren()
+                        ) {
+
+                            PantryItem item =
+                                    itemSnapshot.getValue(
+                                            PantryItem.class
+                                    );
+
+                            if (item == null) {
+                                continue;
+                            }
+
+                            if (
+                                    item.getId() == null
+                                            || item.getId().isEmpty()
+                            ) {
+
+                                item.setId(
+                                        itemSnapshot.getKey()
+                                );
+                            }
+
+                            pantryItems.add(item);
+                        }
+
+                        recipeAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(
+                            @NonNull DatabaseError error
+                    ) {
+
+                        Toast.makeText(
+                                RecipeListActivity.this,
+                                "Could not load pantry data: "
                                         + error.getMessage(),
                                 Toast.LENGTH_LONG
                         ).show();
