@@ -620,19 +620,130 @@ public class RecipeDetailActivity extends AppCompatActivity {
         int quantity =
                 missingIngredientQuantities.get(index);
 
+        findExistingShoppingItem(
+                ingredientName,
+                quantity,
+                index
+        );
+    }
+
+    private void findExistingShoppingItem(
+            String ingredientName,
+            int quantity,
+            int index
+    ) {
+
+        shoppingReference.addListenerForSingleValueEvent(
+                new ValueEventListener() {
+
+                    @Override
+                    public void onDataChange(
+                            @NonNull DataSnapshot snapshot
+                    ) {
+
+                        ShoppingItem existingItem =
+                                null;
+
+                        for (DataSnapshot itemSnapshot :
+                                snapshot.getChildren()) {
+
+                            ShoppingItem item =
+                                    itemSnapshot.getValue(
+                                            ShoppingItem.class
+                                    );
+
+                            if (item == null
+                                    || item.getName() == null) {
+                                continue;
+                            }
+
+                            if (normalizeName(
+                                    item.getName()
+                            ).equals(
+                                    normalizeName(
+                                            ingredientName
+                                    )
+                            )) {
+
+                                existingItem = item;
+                                break;
+                            }
+                        }
+
+                        if (existingItem != null) {
+
+                            int newQuantity =
+                                    existingItem.getQuantity()
+                                            + quantity;
+
+                            existingItem.setQuantity(
+                                    newQuantity
+                            );
+
+                            shoppingReference
+                                    .child(
+                                            existingItem.getId()
+                                    )
+                                    .setValue(
+                                            existingItem
+                                    )
+                                    .addOnCompleteListener(
+                                            task -> {
+
+                                                if (task.isSuccessful()) {
+
+                                                    addShoppingItemAtIndex(
+                                                            index + 1
+                                                    );
+
+                                                } else {
+
+                                                    shoppingListError(
+                                                            ingredientName
+                                                    );
+                                                }
+                                            }
+                                    );
+
+                        } else {
+
+                            createNewShoppingItem(
+                                    ingredientName,
+                                    quantity,
+                                    index
+                            );
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(
+                            @NonNull DatabaseError error
+                    ) {
+
+                        shoppingListError(
+                                ingredientName
+                        );
+                    }
+                }
+        );
+    }
+
+    private void createNewShoppingItem(
+            String ingredientName,
+            int quantity,
+            int index
+    ) {
+
         String shoppingItemId =
-                shoppingReference.push().getKey();
+                shoppingReference
+                        .push()
+                        .getKey();
 
         if (shoppingItemId == null) {
 
-            addMissingToShoppingListButton
-                    .setEnabled(true);
-
-            Toast.makeText(
-                    this,
-                    "Could not create shopping list item.",
-                    Toast.LENGTH_LONG
-            ).show();
+            shoppingListError(
+                    ingredientName
+            );
 
             return;
         }
@@ -648,28 +759,39 @@ public class RecipeDetailActivity extends AppCompatActivity {
         shoppingReference
                 .child(shoppingItemId)
                 .setValue(shoppingItem)
-                .addOnCompleteListener(task -> {
+                .addOnCompleteListener(
+                        task -> {
 
-                    if (task.isSuccessful()) {
+                            if (task.isSuccessful()) {
 
-                        addShoppingItemAtIndex(
-                                index + 1
-                        );
+                                addShoppingItemAtIndex(
+                                        index + 1
+                                );
 
-                    } else {
+                            } else {
 
-                        addMissingToShoppingListButton
-                                .setEnabled(true);
+                                shoppingListError(
+                                        ingredientName
+                                );
+                            }
+                        }
+                );
+    }
 
-                        Toast.makeText(
-                                RecipeDetailActivity.this,
-                                "Could not add "
-                                        + ingredientName
-                                        + " to shopping list.",
-                                Toast.LENGTH_LONG
-                        ).show();
-                    }
-                });
+    private void shoppingListError(
+            String ingredientName
+    ) {
+
+        addMissingToShoppingListButton
+                .setEnabled(true);
+
+        Toast.makeText(
+                RecipeDetailActivity.this,
+                "Could not update "
+                        + ingredientName
+                        + " in shopping list.",
+                Toast.LENGTH_LONG
+        ).show();
     }
 
     private TextView createIngredientTextView(
