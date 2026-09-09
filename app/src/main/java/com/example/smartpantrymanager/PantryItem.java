@@ -6,12 +6,13 @@ public class PantryItem {
     private String name;
     private String category;
     private int quantity;
+    private String unit;
     private String expiryDate;
     private int lowStockLevel;
     private String location;
 
     public PantryItem() {
-        // Required empty constructor for Firebase
+        // Required empty constructor for Firebase.
     }
 
     public PantryItem(
@@ -23,10 +24,33 @@ public class PantryItem {
             int lowStockLevel,
             String location
     ) {
+        this(
+                id,
+                name,
+                category,
+                quantity,
+                "",
+                expiryDate,
+                lowStockLevel,
+                location
+        );
+    }
+
+    public PantryItem(
+            String id,
+            String name,
+            String category,
+            int quantity,
+            String unit,
+            String expiryDate,
+            int lowStockLevel,
+            String location
+    ) {
         this.id = id;
         this.name = name;
         this.category = category;
         this.quantity = quantity;
+        this.unit = unit;
         this.expiryDate = expiryDate;
         this.lowStockLevel = lowStockLevel;
         this.location = location;
@@ -62,6 +86,14 @@ public class PantryItem {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 
     public String getExpiryDate() {

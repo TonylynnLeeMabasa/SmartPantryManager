@@ -41,9 +41,20 @@ public class PantryItemAdapter
 
         holder.itemNameText.setText(item.getName());
         holder.categoryText.setText(item.getCategory());
+
         holder.quantityText.setText(
                 String.valueOf(item.getQuantity())
         );
+
+        // Display the unit saved with the pantry item.
+        String unit = item.getUnit();
+
+        if (unit == null || unit.trim().isEmpty()) {
+            holder.unitText.setText("Unit not specified");
+        } else {
+            holder.unitText.setText(unit);
+        }
+
         holder.locationText.setText(item.getLocation());
 
         holder.expiryDateText.setText(
@@ -57,7 +68,10 @@ public class PantryItemAdapter
                     EditItemActivity.class
             );
 
-            intent.putExtra("itemId", item.getId());
+            intent.putExtra(
+                    "itemId",
+                    item.getId()
+            );
 
             v.getContext().startActivity(intent);
         });
@@ -74,17 +88,44 @@ public class PantryItemAdapter
         TextView itemNameText;
         TextView categoryText;
         TextView quantityText;
+        TextView unitText;
         TextView locationText;
         TextView expiryDateText;
 
-        public PantryItemViewHolder(@NonNull View itemView) {
+        public PantryItemViewHolder(
+                @NonNull View itemView
+        ) {
             super(itemView);
 
-            itemNameText = itemView.findViewById(R.id.itemNameText);
-            categoryText = itemView.findViewById(R.id.categoryText);
-            quantityText = itemView.findViewById(R.id.quantityText);
-            locationText = itemView.findViewById(R.id.locationText);
-            expiryDateText = itemView.findViewById(R.id.expiryDateText);
+            itemNameText =
+                    itemView.findViewById(
+                            R.id.itemNameText
+                    );
+
+            categoryText =
+                    itemView.findViewById(
+                            R.id.categoryText
+                    );
+
+            quantityText =
+                    itemView.findViewById(
+                            R.id.quantityText
+                    );
+
+            unitText =
+                    itemView.findViewById(
+                            R.id.unitText
+                    );
+
+            locationText =
+                    itemView.findViewById(
+                            R.id.locationText
+                    );
+
+            expiryDateText =
+                    itemView.findViewById(
+                            R.id.expiryDateText
+                    );
         }
     }
 }

@@ -1,8 +1,10 @@
 package com.example.smartpantrymanager;
-
+import java.util.Locale;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +21,7 @@ public class AddItemActivity extends AppCompatActivity {
     private EditText itemNameInput;
     private EditText categoryInput;
     private EditText quantityInput;
+    private Spinner unitSpinner;
     private EditText expiryDateInput;
     private EditText lowStockInput;
     private EditText locationInput;
@@ -31,103 +34,219 @@ public class AddItemActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_add_item);
 
-        // Connect to the Smart Pantry Manager Firebase database
+        // Connect to the Smart Pantry Manager Firebase database.
         databaseReference = FirebaseDatabase
                 .getInstance(
                         "https://smart-pantry-manager-7e502-default-rtdb.europe-west1.firebasedatabase.app/"
                 )
                 .getReference();
 
-        // Connect XML fields to Java
+        // Connect XML fields to Java.
         itemNameInput = findViewById(R.id.itemNameInput);
         categoryInput = findViewById(R.id.categoryInput);
         quantityInput = findViewById(R.id.quantityInput);
+        unitSpinner = findViewById(R.id.unitSpinner);
         expiryDateInput = findViewById(R.id.expiryDateInput);
         lowStockInput = findViewById(R.id.lowStockInput);
         locationInput = findViewById(R.id.locationInput);
 
-        // Back button
-        findViewById(R.id.backButton).setOnClickListener(v -> finish());
+        setupUnitSpinner();
 
-        // Expiry date picker
-        expiryDateInput.setOnClickListener(v -> showDatePicker());
+        // Back button.
+        findViewById(R.id.backButton).setOnClickListener(
+                v -> finish()
+        );
 
-        // Save pantry item
-        findViewById(R.id.saveItemButton).setOnClickListener(v -> savePantryItem());
+        // Expiry date picker.
+        expiryDateInput.setOnClickListener(
+                v -> showDatePicker()
+        );
+
+        // Save pantry item.
+        findViewById(R.id.saveItemButton).setOnClickListener(
+                v -> savePantryItem()
+        );
+    }
+
+    private void setupUnitSpinner() {
+
+        String[] units = {
+                "Select Unit",
+                "Pieces",
+                "kg",
+                "g",
+                "L",
+                "ml"
+        };
+
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<>(
+                        this,
+                        android.R.layout.simple_spinner_item,
+                        units
+                );
+
+        adapter.setDropDownViewResource(
+                android.R.layout.simple_spinner_dropdown_item
+        );
+
+        unitSpinner.setAdapter(adapter);
     }
 
     private void showDatePicker() {
 
-        Calendar calendar = Calendar.getInstance();
+        Calendar calendar =
+                Calendar.getInstance();
 
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int year =
+                calendar.get(Calendar.YEAR);
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(
-                this,
-                (view, selectedYear, selectedMonth, selectedDay) -> {
+        int month =
+                calendar.get(Calendar.MONTH);
 
-                    String selectedDate =
-                            String.format(
-                                    "%04d-%02d-%02d",
-                                    selectedYear,
-                                    selectedMonth + 1,
-                                    selectedDay
+        int day =
+                calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog =
+                new DatePickerDialog(
+                        this,
+                        (view, selectedYear,
+                         selectedMonth, selectedDay) -> {
+
+                            String selectedDate =
+                                    String.format(
+                                            Locale.US,
+                                            "%04d-%02d-%02d",
+                                            selectedYear,
+                                            selectedMonth + 1,
+                                            selectedDay
+                                    );
+
+                            expiryDateInput.setText(
+                                    selectedDate
                             );
-
-                    expiryDateInput.setText(selectedDate);
-                },
-                year,
-                month,
-                day
-        );
+                        },
+                        year,
+                        month,
+                        day
+                );
 
         datePickerDialog.show();
     }
 
     private void savePantryItem() {
 
-        String itemName = itemNameInput.getText().toString().trim();
-        String category = categoryInput.getText().toString().trim();
-        String quantityText = quantityInput.getText().toString().trim();
-        String expiryDate = expiryDateInput.getText().toString().trim();
-        String lowStockText = lowStockInput.getText().toString().trim();
-        String location = locationInput.getText().toString().trim();
+        String itemName =
+                itemNameInput
+                        .getText()
+                        .toString()
+                        .trim();
 
-        // Check required fields
+        String category =
+                categoryInput
+                        .getText()
+                        .toString()
+                        .trim();
+
+        String quantityText =
+                quantityInput
+                        .getText()
+                        .toString()
+                        .trim();
+
+        String unit =
+                unitSpinner
+                        .getSelectedItem()
+                        .toString()
+                        .trim();
+
+        String expiryDate =
+                expiryDateInput
+                        .getText()
+                        .toString()
+                        .trim();
+
+        String lowStockText =
+                lowStockInput
+                        .getText()
+                        .toString()
+                        .trim();
+
+        String location =
+                locationInput
+                        .getText()
+                        .toString()
+                        .trim();
+
+        // Check required fields.
         if (itemName.isEmpty()) {
-            itemNameInput.setError("Enter the item name");
+
+            itemNameInput.setError(
+                    "Enter the item name"
+            );
+
             itemNameInput.requestFocus();
             return;
         }
 
         if (category.isEmpty()) {
-            categoryInput.setError("Enter the category");
+
+            categoryInput.setError(
+                    "Enter the category"
+            );
+
             categoryInput.requestFocus();
             return;
         }
 
         if (quantityText.isEmpty()) {
-            quantityInput.setError("Enter the quantity");
+
+            quantityInput.setError(
+                    "Enter the quantity"
+            );
+
             quantityInput.requestFocus();
             return;
         }
 
+        if (unit.isEmpty()
+                || unit.equals("Select Unit")) {
+
+            Toast.makeText(
+                    this,
+                    "Please select a unit.",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            return;
+        }
+
         if (expiryDate.isEmpty()) {
-            expiryDateInput.setError("Select an expiry date");
+
+            expiryDateInput.setError(
+                    "Select an expiry date"
+            );
+
             expiryDateInput.requestFocus();
             return;
         }
 
         if (lowStockText.isEmpty()) {
-            lowStockInput.setError("Enter the low-stock threshold");
+
+            lowStockInput.setError(
+                    "Enter the low-stock threshold"
+            );
+
             lowStockInput.requestFocus();
             return;
         }
 
         if (location.isEmpty()) {
-            locationInput.setError("Enter the storage location");
+
+            locationInput.setError(
+                    "Enter the storage location"
+            );
+
             locationInput.requestFocus();
             return;
         }
@@ -136,8 +255,37 @@ public class AddItemActivity extends AppCompatActivity {
         int lowStockLevel;
 
         try {
-            quantity = Integer.parseInt(quantityText);
-            lowStockLevel = Integer.parseInt(lowStockText);
+
+            quantity =
+                    Integer.parseInt(
+                            quantityText
+                    );
+
+            lowStockLevel =
+                    Integer.parseInt(
+                            lowStockText
+                    );
+
+            if (quantity <= 0) {
+
+                quantityInput.setError(
+                        "Quantity must be greater than 0"
+                );
+
+                quantityInput.requestFocus();
+                return;
+            }
+
+            if (lowStockLevel < 0) {
+
+                lowStockInput.setError(
+                        "Threshold cannot be negative"
+                );
+
+                lowStockInput.requestFocus();
+                return;
+            }
+
         } catch (NumberFormatException e) {
 
             Toast.makeText(
@@ -149,13 +297,15 @@ public class AddItemActivity extends AppCompatActivity {
             return;
         }
 
-        // Create a unique Firebase ID
-        String itemId = databaseReference
-                .child("pantry_items")
-                .push()
-                .getKey();
+        // Create a unique Firebase ID.
+        String itemId =
+                databaseReference
+                        .child("pantry_items")
+                        .push()
+                        .getKey();
 
         if (itemId == null) {
+
             Toast.makeText(
                     this,
                     "Unable to create pantry item.",
@@ -165,18 +315,51 @@ public class AddItemActivity extends AppCompatActivity {
             return;
         }
 
-        // Create pantry item data
-        Map<String, Object> pantryItem = new HashMap<>();
+        // Create pantry item data.
+        Map<String, Object> pantryItem =
+                new HashMap<>();
 
-        pantryItem.put("id", itemId);
-        pantryItem.put("name", itemName);
-        pantryItem.put("category", category);
-        pantryItem.put("quantity", quantity);
-        pantryItem.put("expiryDate", expiryDate);
-        pantryItem.put("lowStockLevel", lowStockLevel);
-        pantryItem.put("location", location);
+        pantryItem.put(
+                "id",
+                itemId
+        );
 
-        // Save to Firebase
+        pantryItem.put(
+                "name",
+                itemName
+        );
+
+        pantryItem.put(
+                "category",
+                category
+        );
+
+        pantryItem.put(
+                "quantity",
+                quantity
+        );
+
+        pantryItem.put(
+                "unit",
+                unit
+        );
+
+        pantryItem.put(
+                "expiryDate",
+                expiryDate
+        );
+
+        pantryItem.put(
+                "lowStockLevel",
+                lowStockLevel
+        );
+
+        pantryItem.put(
+                "location",
+                location
+        );
+
+        // Save to Firebase.
         databaseReference
                 .child("pantry_items")
                 .child(itemId)
@@ -195,7 +378,8 @@ public class AddItemActivity extends AppCompatActivity {
 
                     Toast.makeText(
                             AddItemActivity.this,
-                            "Could not save item: " + e.getMessage(),
+                            "Could not save item: "
+                                    + e.getMessage(),
                             Toast.LENGTH_LONG
                     ).show();
                 });

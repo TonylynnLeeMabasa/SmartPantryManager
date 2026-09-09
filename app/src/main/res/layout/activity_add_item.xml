@@ -61,7 +61,6 @@
 
     </LinearLayout>
 
-
     <!-- Form -->
     <ScrollView
         android:layout_width="0dp"
@@ -105,7 +104,6 @@
                 android:textColorHint="#89928C"
                 android:textSize="15sp" />
 
-
             <!-- Category -->
             <TextView
                 android:layout_width="wrap_content"
@@ -129,7 +127,6 @@
                 android:textColor="#17231B"
                 android:textColorHint="#89928C"
                 android:textSize="15sp" />
-
 
             <!-- Quantity -->
             <TextView
@@ -155,6 +152,24 @@
                 android:textColorHint="#89928C"
                 android:textSize="15sp" />
 
+            <!-- Unit -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Unit"
+                android:textColor="#27352B"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/unitSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/search_background"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp" />
 
             <!-- Expiry date -->
             <TextView
@@ -181,7 +196,6 @@
                 android:textColorHint="#89928C"
                 android:textSize="15sp" />
 
-
             <!-- Low stock threshold -->
             <TextView
                 android:layout_width="wrap_content"
@@ -205,7 +219,6 @@
                 android:textColor="#17231B"
                 android:textColorHint="#89928C"
                 android:textSize="15sp" />
-
 
             <!-- Storage location -->
             <TextView
@@ -234,7 +247,6 @@
         </LinearLayout>
 
     </ScrollView>
-
 
     <!-- Save button -->
     <com.google.android.material.card.MaterialCardView
