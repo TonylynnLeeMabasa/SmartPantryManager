@@ -84,11 +84,12 @@ public class RecipeMatcher {
             int availableQuantity = 0;
 
             if (pantryItem != null) {
-
                 availableQuantity =
                         pantryItem.getQuantity();
             }
 
+            // The recipe can only be made when enough
+            // of every required ingredient is available.
             if (availableQuantity
                     < requiredQuantity) {
 
@@ -156,12 +157,72 @@ public class RecipeMatcher {
                             pantryItem.getName()
                     );
 
-            if (pantryName.equals(requiredName)) {
+            if (areIngredientNamesEquivalent(
+                    pantryName,
+                    requiredName
+            )) {
                 return pantryItem;
             }
         }
 
         return null;
+    }
+
+    private boolean areIngredientNamesEquivalent(
+            String pantryName,
+            String requiredName
+    ) {
+
+        if (pantryName.equals(requiredName)) {
+            return true;
+        }
+
+        // Handle common singular and plural forms.
+        return removePluralEnding(pantryName)
+                .equals(
+                        removePluralEnding(requiredName)
+                );
+    }
+
+    private String removePluralEnding(
+            String name
+    ) {
+
+        if (name.length() <= 3) {
+            return name;
+        }
+
+        // Handle words ending in "ies", such as berries.
+        if (name.endsWith("ies")
+                && name.length() > 3) {
+
+            return name.substring(
+                    0,
+                    name.length() - 3
+            ) + "y";
+        }
+
+        // Handle common words ending in "es".
+        if (name.endsWith("es")
+                && name.length() > 4) {
+
+            return name.substring(
+                    0,
+                    name.length() - 2
+            );
+        }
+
+        // Handle normal plural words ending in "s".
+        if (name.endsWith("s")
+                && name.length() > 3) {
+
+            return name.substring(
+                    0,
+                    name.length() - 1
+            );
+        }
+
+        return name;
     }
 
     private String normalizeName(
