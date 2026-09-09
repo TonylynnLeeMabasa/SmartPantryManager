@@ -7,6 +7,7 @@ import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,10 +15,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
+import java.util.Locale;
 
 public class ShoppingItemAdapter
         extends RecyclerView.Adapter<ShoppingItemAdapter.ShoppingItemViewHolder> {
@@ -25,6 +30,7 @@ public class ShoppingItemAdapter
     private final List<ShoppingItem> shoppingItems;
 
     private final DatabaseReference shoppingReference;
+    private final DatabaseReference pantryReference;
 
     public ShoppingItemAdapter(
             List<ShoppingItem> shoppingItems
@@ -32,13 +38,20 @@ public class ShoppingItemAdapter
 
         this.shoppingItems = shoppingItems;
 
+        FirebaseDatabase database =
+                FirebaseDatabase.getInstance(
+                        "https://smart-pantry-manager-7e502-default-rtdb.europe-west1.firebasedatabase.app/"
+                );
+
         shoppingReference =
-                FirebaseDatabase
-                        .getInstance(
-                                "https://smart-pantry-manager-7e502-default-rtdb.europe-west1.firebasedatabase.app/"
-                        )
+                database
                         .getReference()
                         .child("shopping_items");
+
+        pantryReference =
+                database
+                        .getReference()
+                        .child("pantry_items");
     }
 
     @NonNull
@@ -118,7 +131,30 @@ public class ShoppingItemAdapter
                     shoppingReference
                             .child(item.getId())
                             .child("purchased")
-                            .setValue(isChecked);
+                            .setValue(isChecked)
+                            .addOnCompleteListener(
+                                    task -> {
+
+                                        if (!task.isSuccessful()) {
+
+                                            Toast.makeText(
+                                                    buttonView.getContext(),
+                                                    "Could not update purchase status.",
+                                                    Toast.LENGTH_LONG
+                                            ).show();
+
+                                            return;
+                                        }
+
+                                        if (isChecked) {
+
+                                            showAddToPantryDialog(
+                                                    buttonView.getContext(),
+                                                    item
+                                            );
+                                        }
+                                    }
+                            );
                 }
         );
 
@@ -170,6 +206,264 @@ public class ShoppingItemAdapter
                             & ~Paint.STRIKE_THRU_TEXT_FLAG
             );
         }
+    }
+
+    private void showAddToPantryDialog(
+            Context context,
+            ShoppingItem item
+    ) {
+
+        new AlertDialog.Builder(context)
+                .setTitle(
+                        "Add to Pantry?"
+                )
+                .setMessage(
+                        "Would you like to add "
+                                + item.getQuantity()
+                                + " "
+                                + item.getName()
+                                + " to your pantry?"
+                )
+                .setNegativeButton(
+                        "No",
+                        null
+                )
+                .setPositiveButton(
+                        "Yes",
+                        (dialog, which) -> {
+
+                            addShoppingItemToPantry(
+                                    context,
+                                    item
+                            );
+                        }
+                )
+                .show();
+    }
+
+    private void addShoppingItemToPantry(
+            Context context,
+            ShoppingItem shoppingItem
+    ) {
+
+        pantryReference.addListenerForSingleValueEvent(
+                new ValueEventListener() {
+
+                    @Override
+                    public void onDataChange(
+                            @NonNull DataSnapshot snapshot
+                    ) {
+
+                        PantryItem existingPantryItem =
+                                findPantryItem(
+                                        snapshot,
+                                        shoppingItem.getName()
+                                );
+
+                        if (existingPantryItem != null) {
+
+                            updateExistingPantryItem(
+                                    context,
+                                    existingPantryItem,
+                                    shoppingItem
+                            );
+
+                        } else {
+
+                            createNewPantryItem(
+                                    context,
+                                    shoppingItem
+                            );
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(
+                            @NonNull DatabaseError error
+                    ) {
+
+                        Toast.makeText(
+                                context,
+                                "Could not access pantry: "
+                                        + error.getMessage(),
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
+                }
+        );
+    }
+
+    private PantryItem findPantryItem(
+            DataSnapshot snapshot,
+            String ingredientName
+    ) {
+
+        if (ingredientName == null) {
+            return null;
+        }
+
+        String requiredName =
+                normalizeName(
+                        ingredientName
+                );
+
+        for (DataSnapshot itemSnapshot :
+                snapshot.getChildren()) {
+
+            PantryItem pantryItem =
+                    itemSnapshot.getValue(
+                            PantryItem.class
+                    );
+
+            if (pantryItem == null
+                    || pantryItem.getName() == null) {
+                continue;
+            }
+
+            if (normalizeName(
+                    pantryItem.getName()
+            ).equals(requiredName)) {
+
+                if (pantryItem.getId() == null
+                        || pantryItem.getId().isEmpty()) {
+
+                    pantryItem.setId(
+                            itemSnapshot.getKey()
+                    );
+                }
+
+                return pantryItem;
+            }
+        }
+
+        return null;
+    }
+
+    private void updateExistingPantryItem(
+            Context context,
+            PantryItem existingItem,
+            ShoppingItem shoppingItem
+    ) {
+
+        int newQuantity =
+                existingItem.getQuantity()
+                        + shoppingItem.getQuantity();
+
+        existingItem.setQuantity(
+                newQuantity
+        );
+
+        if (existingItem.getId() == null
+                || existingItem.getId().isEmpty()) {
+
+            Toast.makeText(
+                    context,
+                    "Pantry item ID is missing.",
+                    Toast.LENGTH_LONG
+            ).show();
+
+            return;
+        }
+
+        pantryReference
+                .child(existingItem.getId())
+                .setValue(existingItem)
+                .addOnCompleteListener(
+                        task -> {
+
+                            if (task.isSuccessful()) {
+
+                                Toast.makeText(
+                                        context,
+                                        shoppingItem.getQuantity()
+                                                + " "
+                                                + shoppingItem.getName()
+                                                + " added to pantry. "
+                                                + "New quantity: "
+                                                + newQuantity,
+                                        Toast.LENGTH_LONG
+                                ).show();
+
+                            } else {
+
+                                Toast.makeText(
+                                        context,
+                                        "Could not update pantry item.",
+                                        Toast.LENGTH_LONG
+                                ).show();
+                            }
+                        }
+                );
+    }
+
+    private void createNewPantryItem(
+            Context context,
+            ShoppingItem shoppingItem
+    ) {
+
+        String pantryItemId =
+                pantryReference
+                        .push()
+                        .getKey();
+
+        if (pantryItemId == null) {
+
+            Toast.makeText(
+                    context,
+                    "Could not create pantry item.",
+                    Toast.LENGTH_LONG
+            ).show();
+
+            return;
+        }
+
+        PantryItem newPantryItem =
+                new PantryItem(
+                        pantryItemId,
+                        shoppingItem.getName(),
+                        "Other",
+                        shoppingItem.getQuantity(),
+                        "",
+                        1,
+                        "Pantry"
+                );
+
+        pantryReference
+                .child(pantryItemId)
+                .setValue(newPantryItem)
+                .addOnCompleteListener(
+                        task -> {
+
+                            if (task.isSuccessful()) {
+
+                                Toast.makeText(
+                                        context,
+                                        shoppingItem.getQuantity()
+                                                + " "
+                                                + shoppingItem.getName()
+                                                + " added to pantry.",
+                                        Toast.LENGTH_LONG
+                                ).show();
+
+                            } else {
+
+                                Toast.makeText(
+                                        context,
+                                        "Could not add item to pantry.",
+                                        Toast.LENGTH_LONG
+                                ).show();
+                            }
+                        }
+                );
+    }
+
+    private String normalizeName(
+            String name
+    ) {
+
+        return name
+                .trim()
+                .toLowerCase(Locale.getDefault());
     }
 
     private void showEditQuantityDialog(
@@ -430,7 +724,7 @@ public class ShoppingItemAdapter
         TextView editShoppingItemButton;
         TextView deleteShoppingItemButton;
 
-        android.widget.CheckBox purchasedCheckBox;
+        CheckBox purchasedCheckBox;
 
         public ShoppingItemViewHolder(
                 @NonNull View itemView
