@@ -1,6 +1,7 @@
 package com.example.smartpantrymanager;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -27,6 +28,15 @@ import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String PREFS_NAME =
+            "smart_pantry_settings";
+
+    private static final String EXPIRY_ALERTS_KEY =
+            "expiry_alerts_enabled";
+
+    private static final String LOW_STOCK_ALERTS_KEY =
+            "low_stock_alerts_enabled";
 
     private DatabaseReference databaseReference;
 
@@ -64,19 +74,29 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main);
+        setContentView(
+                R.layout.activity_main
+        );
 
         totalItemsCount =
-                findViewById(R.id.totalItemsCount);
+                findViewById(
+                        R.id.totalItemsCount
+                );
 
         expiringSoonCount =
-                findViewById(R.id.expiringSoonCount);
+                findViewById(
+                        R.id.expiringSoonCount
+                );
 
         lowStockCount =
-                findViewById(R.id.lowStockCount);
+                findViewById(
+                        R.id.lowStockCount
+                );
 
         lowStockDescription =
-                findViewById(R.id.lowStockDescription);
+                findViewById(
+                        R.id.lowStockDescription
+                );
 
         expiringItemsRecyclerView =
                 findViewById(
@@ -111,6 +131,16 @@ public class MainActivity extends AppCompatActivity {
         setupNavigation();
 
         loadPantryItems();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Refresh dashboard visibility after returning from Settings.
+        if (pantryItems != null && !pantryItems.isEmpty()) {
+            updateDashboard();
+        }
     }
 
     private void setupRecyclerViews() {
@@ -150,6 +180,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupNavigation() {
 
+        // Open the pantry inventory.
         findViewById(R.id.inventoryCard)
                 .setOnClickListener(v -> {
 
@@ -162,6 +193,7 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                 });
 
+        // Open the add pantry item form.
         findViewById(R.id.addItemCard)
                 .setOnClickListener(v -> {
 
@@ -174,6 +206,7 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                 });
 
+        // Open the shopping list.
         findViewById(R.id.shoppingListCard)
                 .setOnClickListener(v -> {
 
@@ -186,6 +219,7 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                 });
 
+        // Open the recipe finder.
         findViewById(R.id.recipeFinderCard)
                 .setOnClickListener(v -> {
 
@@ -197,8 +231,22 @@ public class MainActivity extends AppCompatActivity {
 
                     startActivity(intent);
                 });
+
+        // Open the required Settings/Profile screen.
+        findViewById(R.id.profileNav)
+                .setOnClickListener(v -> {
+
+                    Intent intent =
+                            new Intent(
+                                    MainActivity.this,
+                                    SettingsActivity.class
+                            );
+
+                    startActivity(intent);
+                });
     }
 
+    // Load pantry items from Firebase.
     private void loadPantryItems() {
 
         databaseReference.addValueEventListener(
@@ -225,10 +273,9 @@ public class MainActivity extends AppCompatActivity {
                                 continue;
                             }
 
-                            if (
-                                    item.getId() == null
-                                            || item.getId().isEmpty()
-                            ) {
+                            // Use the Firebase key when an item has no ID.
+                            if (item.getId() == null
+                                    || item.getId().isEmpty()) {
 
                                 item.setId(
                                         itemSnapshot.getKey()
@@ -257,6 +304,7 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
+    // Update dashboard statistics and alert sections.
     private void updateDashboard() {
 
         totalItemsCount.setText(
@@ -270,7 +318,37 @@ public class MainActivity extends AppCompatActivity {
         updateLowStockItems();
     }
 
+    // Find pantry items expiring within the next seven days.
     private void updateExpiringItems() {
+
+        SharedPreferences preferences =
+                getSharedPreferences(
+                        PREFS_NAME,
+                        MODE_PRIVATE
+                );
+
+        boolean alertsEnabled =
+                preferences.getBoolean(
+                        EXPIRY_ALERTS_KEY,
+                        true
+                );
+
+        if (!alertsEnabled) {
+
+            expiringItems.clear();
+
+            expiringSoonCount.setText("0");
+
+            expiringItemsRecyclerView.setVisibility(
+                    View.GONE
+            );
+
+            emptyExpiryCard.setVisibility(
+                    View.GONE
+            );
+
+            return;
+        }
 
         expiringItems.clear();
 
@@ -285,15 +363,15 @@ public class MainActivity extends AppCompatActivity {
                 7
         );
 
-        for (PantryItem item : pantryItems) {
+        for (PantryItem item :
+                pantryItems) {
 
             String expiryDateText =
                     item.getExpiryDate();
 
-            if (
-                    expiryDateText == null
-                            || expiryDateText.isEmpty()
-            ) {
+            if (expiryDateText == null
+                    || expiryDateText.isEmpty()) {
+
                 continue;
             }
 
@@ -315,18 +393,16 @@ public class MainActivity extends AppCompatActivity {
                         expiryDate
                 );
 
-                if (
-                        !expiryCalendar.before(today)
-                                && !expiryCalendar.after(
-                                sevenDaysFromNow
-                        )
-                ) {
+                if (!expiryCalendar.before(today)
+                        && !expiryCalendar.after(
+                        sevenDaysFromNow
+                )) {
 
                     expiringItems.add(item);
                 }
 
             } catch (ParseException ignored) {
-                // Ignore invalid expiry dates
+                // Ignore invalid expiry dates.
             }
         }
 
@@ -360,16 +436,49 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Find pantry items at or below their low-stock level.
     private void updateLowStockItems() {
+
+        SharedPreferences preferences =
+                getSharedPreferences(
+                        PREFS_NAME,
+                        MODE_PRIVATE
+                );
+
+        boolean alertsEnabled =
+                preferences.getBoolean(
+                        LOW_STOCK_ALERTS_KEY,
+                        true
+                );
+
+        if (!alertsEnabled) {
+
+            lowStockItems.clear();
+
+            lowStockCount.setText("0");
+
+            lowStockItemsRecyclerView.setVisibility(
+                    View.GONE
+            );
+
+            emptyLowStockCard.setVisibility(
+                    View.GONE
+            );
+
+            lowStockDescription.setText(
+                    "Low-stock alerts are disabled"
+            );
+
+            return;
+        }
 
         lowStockItems.clear();
 
-        for (PantryItem item : pantryItems) {
+        for (PantryItem item :
+                pantryItems) {
 
-            if (
-                    item.getQuantity()
-                            <= item.getLowStockLevel()
-            ) {
+            if (item.getQuantity()
+                    <= item.getLowStockLevel()) {
 
                 lowStockItems.add(item);
             }
