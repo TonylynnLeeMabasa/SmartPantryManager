@@ -3,7 +3,9 @@ package com.example.smartpantrymanager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,12 +14,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
+import java.util.Locale;
 
 public class EditItemActivity extends AppCompatActivity {
 
     private EditText itemNameInput;
     private EditText categoryInput;
     private EditText quantityInput;
+    private Spinner unitSpinner;
     private EditText expiryDateInput;
     private EditText lowStockInput;
     private EditText locationInput;
@@ -25,18 +29,41 @@ public class EditItemActivity extends AppCompatActivity {
     private DatabaseReference databaseReference;
     private String itemId;
 
+    private final String[] units = {
+            "Select Unit",
+            "Pieces",
+            "kg",
+            "g",
+            "L",
+            "ml"
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_edit_item);
 
-        itemNameInput = findViewById(R.id.editItemNameInput);
-        categoryInput = findViewById(R.id.editCategoryInput);
-        quantityInput = findViewById(R.id.editQuantityInput);
-        expiryDateInput = findViewById(R.id.editExpiryDateInput);
-        lowStockInput = findViewById(R.id.editLowStockInput);
-        locationInput = findViewById(R.id.editLocationInput);
+        itemNameInput =
+                findViewById(R.id.editItemNameInput);
+
+        categoryInput =
+                findViewById(R.id.editCategoryInput);
+
+        quantityInput =
+                findViewById(R.id.editQuantityInput);
+
+        unitSpinner =
+                findViewById(R.id.editUnitSpinner);
+
+        expiryDateInput =
+                findViewById(R.id.editExpiryDateInput);
+
+        lowStockInput =
+                findViewById(R.id.editLowStockInput);
+
+        locationInput =
+                findViewById(R.id.editLocationInput);
 
         databaseReference = FirebaseDatabase
                 .getInstance(
@@ -44,24 +71,54 @@ public class EditItemActivity extends AppCompatActivity {
                 )
                 .getReference();
 
-        itemId = getIntent().getStringExtra("itemId");
+        itemId =
+                getIntent().getStringExtra("itemId");
 
-        findViewById(R.id.backButton).setOnClickListener(v -> finish());
+        setupUnitSpinner();
 
-        expiryDateInput.setOnClickListener(v -> showDatePicker());
+        findViewById(R.id.backButton)
+                .setOnClickListener(
+                        v -> finish()
+                );
+
+        expiryDateInput.setOnClickListener(
+                v -> showDatePicker()
+        );
 
         findViewById(R.id.updateItemButton)
-                .setOnClickListener(v -> updatePantryItem());
+                .setOnClickListener(
+                        v -> updatePantryItem()
+                );
 
         findViewById(R.id.deleteItemButton)
-                .setOnClickListener(v -> confirmDelete());
+                .setOnClickListener(
+                        v -> confirmDelete()
+                );
 
         loadItem();
     }
 
+    private void setupUnitSpinner() {
+
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<>(
+                        this,
+                        android.R.layout.simple_spinner_item,
+                        units
+                );
+
+        adapter.setDropDownViewResource(
+                android.R.layout.simple_spinner_dropdown_item
+        );
+
+        unitSpinner.setAdapter(adapter);
+    }
+
     private void loadItem() {
 
-        if (itemId == null || itemId.isEmpty()) {
+        if (itemId == null
+                || itemId.isEmpty()) {
+
             Toast.makeText(
                     this,
                     "Pantry item could not be found.",
@@ -79,9 +136,12 @@ public class EditItemActivity extends AppCompatActivity {
                 .addOnSuccessListener(snapshot -> {
 
                     PantryItem item =
-                            snapshot.getValue(PantryItem.class);
+                            snapshot.getValue(
+                                    PantryItem.class
+                            );
 
                     if (item == null) {
+
                         Toast.makeText(
                                 EditItemActivity.this,
                                 "Pantry item could not be found.",
@@ -92,14 +152,18 @@ public class EditItemActivity extends AppCompatActivity {
                         return;
                     }
 
-                    itemNameInput.setText(item.getName());
+                    itemNameInput.setText(
+                            item.getName()
+                    );
 
                     categoryInput.setText(
                             item.getCategory()
                     );
 
                     quantityInput.setText(
-                            String.valueOf(item.getQuantity())
+                            String.valueOf(
+                                    item.getQuantity()
+                            )
                     );
 
                     expiryDateInput.setText(
@@ -107,12 +171,17 @@ public class EditItemActivity extends AppCompatActivity {
                     );
 
                     lowStockInput.setText(
-                            String.valueOf(item.getLowStockLevel())
+                            String.valueOf(
+                                    item.getLowStockLevel()
+                            )
                     );
 
                     locationInput.setText(
                             item.getLocation()
                     );
+
+                    // Select the saved unit.
+                    selectUnit(item.getUnit());
                 })
                 .addOnFailureListener(e -> {
 
@@ -125,32 +194,66 @@ public class EditItemActivity extends AppCompatActivity {
                 });
     }
 
+    private void selectUnit(String savedUnit) {
+
+        if (savedUnit == null
+                || savedUnit.trim().isEmpty()) {
+
+            unitSpinner.setSelection(0);
+            return;
+        }
+
+        for (int i = 0; i < units.length; i++) {
+
+            if (units[i].equalsIgnoreCase(
+                    savedUnit.trim()
+            )) {
+
+                unitSpinner.setSelection(i);
+                return;
+            }
+        }
+
+        unitSpinner.setSelection(0);
+    }
+
     private void showDatePicker() {
 
-        Calendar calendar = Calendar.getInstance();
+        Calendar calendar =
+                Calendar.getInstance();
 
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int year =
+                calendar.get(Calendar.YEAR);
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(
-                this,
-                (view, selectedYear, selectedMonth, selectedDay) -> {
+        int month =
+                calendar.get(Calendar.MONTH);
 
-                    String selectedDate =
-                            String.format(
-                                    "%04d-%02d-%02d",
-                                    selectedYear,
-                                    selectedMonth + 1,
-                                    selectedDay
+        int day =
+                calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog =
+                new DatePickerDialog(
+                        this,
+                        (view, selectedYear,
+                         selectedMonth, selectedDay) -> {
+
+                            String selectedDate =
+                                    String.format(
+                                            Locale.US,
+                                            "%04d-%02d-%02d",
+                                            selectedYear,
+                                            selectedMonth + 1,
+                                            selectedDay
+                                    );
+
+                            expiryDateInput.setText(
+                                    selectedDate
                             );
-
-                    expiryDateInput.setText(selectedDate);
-                },
-                year,
-                month,
-                day
-        );
+                        },
+                        year,
+                        month,
+                        day
+                );
 
         datePickerDialog.show();
     }
@@ -158,22 +261,46 @@ public class EditItemActivity extends AppCompatActivity {
     private void updatePantryItem() {
 
         String itemName =
-                itemNameInput.getText().toString().trim();
+                itemNameInput
+                        .getText()
+                        .toString()
+                        .trim();
 
         String category =
-                categoryInput.getText().toString().trim();
+                categoryInput
+                        .getText()
+                        .toString()
+                        .trim();
 
         String quantityText =
-                quantityInput.getText().toString().trim();
+                quantityInput
+                        .getText()
+                        .toString()
+                        .trim();
+
+        String unit =
+                unitSpinner
+                        .getSelectedItem()
+                        .toString()
+                        .trim();
 
         String expiryDate =
-                expiryDateInput.getText().toString().trim();
+                expiryDateInput
+                        .getText()
+                        .toString()
+                        .trim();
 
         String lowStockText =
-                lowStockInput.getText().toString().trim();
+                lowStockInput
+                        .getText()
+                        .toString()
+                        .trim();
 
         String location =
-                locationInput.getText().toString().trim();
+                locationInput
+                        .getText()
+                        .toString()
+                        .trim();
 
         if (itemName.isEmpty()) {
 
@@ -202,6 +329,18 @@ public class EditItemActivity extends AppCompatActivity {
             );
 
             quantityInput.requestFocus();
+            return;
+        }
+
+        if (unit.isEmpty()
+                || unit.equals("Select Unit")) {
+
+            Toast.makeText(
+                    this,
+                    "Please select a unit.",
+                    Toast.LENGTH_SHORT
+            ).show();
+
             return;
         }
 
@@ -241,10 +380,34 @@ public class EditItemActivity extends AppCompatActivity {
         try {
 
             quantity =
-                    Integer.parseInt(quantityText);
+                    Integer.parseInt(
+                            quantityText
+                    );
 
             lowStockLevel =
-                    Integer.parseInt(lowStockText);
+                    Integer.parseInt(
+                            lowStockText
+                    );
+
+            if (quantity <= 0) {
+
+                quantityInput.setError(
+                        "Quantity must be greater than 0"
+                );
+
+                quantityInput.requestFocus();
+                return;
+            }
+
+            if (lowStockLevel < 0) {
+
+                lowStockInput.setError(
+                        "Threshold cannot be negative"
+                );
+
+                lowStockInput.requestFocus();
+                return;
+            }
 
         } catch (NumberFormatException e) {
 
@@ -263,6 +426,7 @@ public class EditItemActivity extends AppCompatActivity {
                         itemName,
                         category,
                         quantity,
+                        unit,
                         expiryDate,
                         lowStockLevel,
                         location
@@ -307,14 +471,16 @@ public class EditItemActivity extends AppCompatActivity {
                 )
                 .setPositiveButton(
                         "Delete",
-                        (dialog, which) -> deletePantryItem()
+                        (dialog, which) ->
+                                deletePantryItem()
                 )
                 .show();
     }
 
     private void deletePantryItem() {
 
-        if (itemId == null || itemId.isEmpty()) {
+        if (itemId == null
+                || itemId.isEmpty()) {
 
             Toast.makeText(
                     this,

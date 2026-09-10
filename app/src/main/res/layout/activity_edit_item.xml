@@ -156,6 +156,25 @@
                 android:textColorHint="#89938B"
                 android:textSize="15sp" />
 
+            <!-- Unit -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:text="Unit"
+                android:textColor="#425048"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/editUnitSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/search_background"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp" />
+
             <!-- Expiry date -->
             <TextView
                 android:layout_width="wrap_content"
