@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F7F8F3">
+    android:background="@color/background_dark">
 
     <!-- Header -->
     <LinearLayout
@@ -26,12 +26,13 @@
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:background="@drawable/profile_circle"
+            android:backgroundTint="@color/surface_card"
             android:clickable="true"
             android:contentDescription="@string/back_button_description"
             android:focusable="true"
             android:gravity="center"
             android:text="@string/back_arrow"
-            android:textColor="#244E32"
+            android:textColor="@color/primary_green"
             android:textSize="32sp"
             android:textStyle="bold" />
 
@@ -46,7 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/pantry"
-                android:textColor="#6B756D"
+                android:textColor="@color/text_secondary_dark"
                 android:textSize="13sp" />
 
             <TextView
@@ -54,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:text="@string/edit_pantry_item"
-                android:textColor="#17231B"
+                android:textColor="@color/text_primary_dark"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
@@ -87,7 +88,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/item_name"
-                android:textColor="#425048"
+                android:textColor="@color/text_primary_dark"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -98,12 +99,13 @@
                 android:layout_marginTop="8dp"
                 android:autofillHints="name"
                 android:background="@drawable/search_background"
+                android:backgroundTint="@color/surface_dark"
                 android:hint="@string/enter_item_name"
                 android:inputType="textCapWords"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
-                android:textColor="#17231B"
-                android:textColorHint="#89938B"
+                android:textColor="@color/text_primary_dark"
+                android:textColorHint="@color/text_muted_dark"
                 android:textSize="15sp" />
 
             <!-- Category -->
@@ -112,7 +114,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
                 android:text="@string/category"
-                android:textColor="#425048"
+                android:textColor="@color/text_primary_dark"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -123,12 +125,13 @@
                 android:layout_marginTop="8dp"
                 android:autofillHints="none"
                 android:background="@drawable/search_background"
+                android:backgroundTint="@color/surface_dark"
                 android:hint="@string/enter_category"
                 android:inputType="textCapWords"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
-                android:textColor="#17231B"
-                android:textColorHint="#89938B"
+                android:textColor="@color/text_primary_dark"
+                android:textColorHint="@color/text_muted_dark"
                 android:textSize="15sp" />
 
             <!-- Quantity -->
@@ -137,7 +140,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
                 android:text="@string/quantity"
-                android:textColor="#425048"
+                android:textColor="@color/text_primary_dark"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -148,12 +151,13 @@
                 android:layout_marginTop="8dp"
                 android:autofillHints="none"
                 android:background="@drawable/search_background"
+                android:backgroundTint="@color/surface_dark"
                 android:hint="@string/enter_quantity"
                 android:inputType="number"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
-                android:textColor="#17231B"
-                android:textColorHint="#89938B"
+                android:textColor="@color/text_primary_dark"
+                android:textColorHint="@color/text_muted_dark"
                 android:textSize="15sp" />
 
             <!-- Unit -->
@@ -162,7 +166,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
                 android:text="Unit"
-                android:textColor="#425048"
+                android:textColor="@color/text_primary_dark"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -172,6 +176,7 @@
                 android:layout_height="56dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/search_background"
+                android:backgroundTint="@color/surface_dark"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp" />
 
@@ -181,7 +186,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
                 android:text="@string/expiry_date"
-                android:textColor="#425048"
+                android:textColor="@color/text_primary_dark"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -192,6 +197,7 @@
                 android:layout_marginTop="8dp"
                 android:autofillHints="none"
                 android:background="@drawable/search_background"
+                android:backgroundTint="@color/surface_dark"
                 android:clickable="true"
                 android:cursorVisible="false"
                 android:focusable="true"
@@ -200,8 +206,8 @@
                 android:inputType="none"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
-                android:textColor="#17231B"
-                android:textColorHint="#89938B"
+                android:textColor="@color/text_primary_dark"
+                android:textColorHint="@color/text_muted_dark"
                 android:textSize="15sp" />
 
             <!-- Low stock -->
@@ -210,7 +216,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
                 android:text="@string/low_stock_threshold"
-                android:textColor="#425048"
+                android:textColor="@color/text_primary_dark"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -221,12 +227,13 @@
                 android:layout_marginTop="8dp"
                 android:autofillHints="none"
                 android:background="@drawable/search_background"
+                android:backgroundTint="@color/surface_dark"
                 android:hint="@string/enter_low_stock_threshold"
                 android:inputType="number"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
-                android:textColor="#17231B"
-                android:textColorHint="#89938B"
+                android:textColor="@color/text_primary_dark"
+                android:textColorHint="@color/text_muted_dark"
                 android:textSize="15sp" />
 
             <!-- Location -->
@@ -235,7 +242,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
                 android:text="@string/storage_location"
-                android:textColor="#425048"
+                android:textColor="@color/text_primary_dark"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -246,12 +253,13 @@
                 android:layout_marginTop="8dp"
                 android:autofillHints="none"
                 android:background="@drawable/search_background"
+                android:backgroundTint="@color/surface_dark"
                 android:hint="@string/storage_location_hint"
                 android:inputType="textCapWords"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
-                android:textColor="#17231B"
-                android:textColorHint="#89938B"
+                android:textColor="@color/text_primary_dark"
+                android:textColorHint="@color/text_muted_dark"
                 android:textSize="15sp" />
 
         </LinearLayout>
@@ -269,7 +277,7 @@
         android:clickable="true"
         android:focusable="true"
         android:contentDescription="@string/update_pantry_item"
-        app:cardBackgroundColor="#244E32"
+        app:cardBackgroundColor="@color/primary_green_dark"
         app:cardCornerRadius="18dp"
         app:cardElevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -281,7 +289,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="@string/update_pantry_item"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/text_primary_dark"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -298,7 +306,7 @@
         android:clickable="true"
         android:focusable="true"
         android:contentDescription="@string/delete_pantry_item"
-        app:cardBackgroundColor="#FEE2E2"
+        app:cardBackgroundColor="#4A2024"
         app:cardCornerRadius="18dp"
         app:cardElevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -310,7 +318,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="@string/delete_pantry_item"
-            android:textColor="#B91C1C"
+            android:textColor="#FF8A8A"
             android:textSize="15sp"
             android:textStyle="bold" />
 

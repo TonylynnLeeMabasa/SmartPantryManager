@@ -522,7 +522,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
             );
 
             recipeStatusText.setTextColor(
-                    0xFF2F6B42
+                    0xFFA7E3B8
             );
 
             ingredientsSummary.setText(
@@ -545,7 +545,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
             );
 
             recipeStatusText.setTextColor(
-                    0xFF8A3B3B
+                    0xFFFF8A8A
             );
 
             ingredientsSummary.setText(
@@ -801,6 +801,15 @@ public class RecipeDetailActivity extends AppCompatActivity {
         TextView textView =
                 createBodyTextView(text);
 
+        textView.setTextColor(
+                0xFFD8E4DD
+        );
+
+        textView.setTypeface(
+                null,
+                Typeface.BOLD
+        );
+
         textView.setPadding(
                 0,
                 10,
@@ -821,7 +830,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
                 );
 
         textView.setTextColor(
-                0xFF8A3B3B
+                0xFFFF8A8A
         );
 
         textView.setTypeface(
@@ -845,6 +854,10 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
         TextView textView =
                 createBodyTextView(text);
+
+        textView.setTextColor(
+                0xFFD8E4DD
+        );
 
         textView.setPadding(
                 0,
@@ -875,7 +888,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         );
 
         textView.setTextColor(
-                0xFF27352B
+                0xFFD8E4DD
         );
 
         textView.setTextSize(

@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F7F8F3">
+    android:background="@color/background_dark">
 
     <!-- Header -->
     <TextView
@@ -16,7 +16,7 @@
         android:layout_marginStart="20dp"
         android:gravity="center_vertical"
         android:text="‹  Back"
-        android:textColor="#2F6B42"
+        android:textColor="@color/primary_green"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,7 +30,7 @@
         android:layout_marginTop="4dp"
         android:layout_marginEnd="20dp"
         android:text="Recipe Finder"
-        android:textColor="#27352B"
+        android:textColor="@color/text_primary_dark"
         android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -45,7 +45,7 @@
         android:layout_marginTop="4dp"
         android:layout_marginEnd="20dp"
         android:text="Find recipes you can make"
-        android:textColor="#7A857E"
+        android:textColor="@color/text_secondary_dark"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -59,7 +59,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="18dp"
         android:layout_marginEnd="20dp"
-        app:cardBackgroundColor="#EAF3EC"
+        app:cardBackgroundColor="@color/surface_green"
         app:cardCornerRadius="18dp"
         app:strokeWidth="0dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -87,7 +87,7 @@
                 android:layout_marginStart="14dp"
                 android:layout_weight="1"
                 android:text="Recipes are matched against the ingredients and quantities currently in your pantry."
-                android:textColor="#526158"
+                android:textColor="@color/text_primary_dark"
                 android:textSize="13sp" />
 
         </LinearLayout>
@@ -115,8 +115,9 @@
             android:layout_weight="1"
             android:text="All Recipes"
             android:textAllCaps="false"
+            android:textColor="@color/text_primary_dark"
             android:textSize="14sp"
-            app:backgroundTint="#2F6B42"
+            app:backgroundTint="@color/primary_green_dark"
             app:cornerRadius="14dp" />
 
         <com.google.android.material.button.MaterialButton
@@ -127,11 +128,11 @@
             android:layout_weight="1"
             android:text="Can Make"
             android:textAllCaps="false"
-            android:textColor="#2F6B42"
+            android:textColor="@color/primary_green"
             android:textSize="14sp"
-            app:backgroundTint="#FFFFFF"
+            app:backgroundTint="@color/surface_dark"
             app:cornerRadius="14dp"
-            app:strokeColor="#2F6B42"
+            app:strokeColor="@color/primary_green_dark"
             app:strokeWidth="1dp" />
 
     </LinearLayout>
@@ -155,7 +156,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Available Recipes"
-            android:textColor="#27352B"
+            android:textColor="@color/text_primary_dark"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -164,7 +165,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0 recipes"
-            android:textColor="#2F6B42"
+            android:textColor="@color/primary_green"
             android:textSize="13sp"
             android:textStyle="bold" />
 
@@ -197,7 +198,7 @@
         android:layout_marginTop="12dp"
         android:layout_marginEnd="20dp"
         android:visibility="gone"
-        app:cardBackgroundColor="#FFFFFF"
+        app:cardBackgroundColor="@color/surface_card"
         app:cardCornerRadius="18dp"
         app:strokeWidth="0dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -222,7 +223,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="No recipes found"
-                android:textColor="#27352B"
+                android:textColor="@color/text_primary_dark"
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
@@ -231,7 +232,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:text="Try adding more ingredients to your pantry."
-                android:textColor="#7A857E"
+                android:textColor="@color/text_secondary_dark"
                 android:textSize="13sp" />
 
         </LinearLayout>

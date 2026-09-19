@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
-    app:cardBackgroundColor="#FFFFFF"
+    app:cardBackgroundColor="@color/surface_card"
     app:cardCornerRadius="20dp"
     app:cardElevation="0dp">
 
@@ -44,7 +44,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Milk"
-                    android:textColor="#17231B"
+                    android:textColor="@color/text_primary_dark"
                     android:textSize="17sp"
                     android:textStyle="bold" />
 
@@ -54,7 +54,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     android:text="Dairy"
-                    android:textColor="#718078"
+                    android:textColor="@color/text_secondary_dark"
                     android:textSize="13sp" />
 
             </LinearLayout>
@@ -78,7 +78,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Quantity"
-                    android:textColor="#89938C"
+                    android:textColor="@color/text_muted_dark"
                     android:textSize="12sp" />
 
                 <TextView
@@ -87,7 +87,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     android:text="5"
-                    android:textColor="#244E32"
+                    android:textColor="@color/primary_green"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
@@ -97,7 +97,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:text="Pieces"
-                    android:textColor="#718078"
+                    android:textColor="@color/text_secondary_dark"
                     android:textSize="12sp" />
 
             </LinearLayout>
@@ -112,7 +112,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Location"
-                    android:textColor="#89938C"
+                    android:textColor="@color/text_muted_dark"
                     android:textSize="12sp" />
 
                 <TextView
@@ -121,7 +121,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     android:text="Fridge"
-                    android:textColor="#244E32"
+                    android:textColor="@color/primary_green"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
@@ -134,7 +134,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
-            android:background="@drawable/search_background"
+            android:background="@color/surface_dark"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="10dp">
@@ -151,7 +151,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:text="Expires: 2026-09-15"
-                android:textColor="#59665E"
+                android:textColor="@color/text_secondary_dark"
                 android:textSize="13sp" />
 
         </LinearLayout>
