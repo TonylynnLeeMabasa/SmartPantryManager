@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F7F8F3">
+    android:background="@color/background_dark">
 
     <ScrollView
         android:layout_width="0dp"
@@ -31,7 +31,7 @@
                 android:layout_height="48dp"
                 android:gravity="center_vertical"
                 android:text="‹  Back"
-                android:textColor="#2F6B42"
+                android:textColor="@color/primary_green"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="Profile &amp; Settings"
-                android:textColor="#27352B"
+                android:textColor="@color/text_primary_dark"
                 android:textSize="28sp"
                 android:textStyle="bold" />
 
@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:text="Manage your Smart Pantry preferences."
-                android:textColor="#7A857E"
+                android:textColor="@color/text_secondary_dark"
                 android:textSize="14sp" />
 
             <!-- App profile card -->
@@ -58,8 +58,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="22dp"
-                app:cardBackgroundColor="#FFFFFF"
+                app:cardBackgroundColor="@color/surface_card"
                 app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
                 app:strokeWidth="0dp">
 
                 <LinearLayout
@@ -75,7 +76,7 @@
                         android:background="@drawable/icon_circle_green"
                         android:gravity="center"
                         android:text="SP"
-                        android:textColor="#2F6B42"
+                        android:textColor="@color/primary_green"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
@@ -90,7 +91,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Smart Pantry Manager"
-                            android:textColor="#27352B"
+                            android:textColor="@color/text_primary_dark"
                             android:textSize="17sp"
                             android:textStyle="bold" />
 
@@ -99,7 +100,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
                             android:text="Personal pantry assistant"
-                            android:textColor="#7A857E"
+                            android:textColor="@color/text_secondary_dark"
                             android:textSize="13sp" />
 
                     </LinearLayout>
@@ -114,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
                 android:text="Preferences"
-                android:textColor="#27352B"
+                android:textColor="@color/text_primary_dark"
                 android:textSize="19sp"
                 android:textStyle="bold" />
 
@@ -123,8 +124,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                app:cardBackgroundColor="#FFFFFF"
+                app:cardBackgroundColor="@color/surface_card"
                 app:cardCornerRadius="18dp"
+                app:cardElevation="0dp"
                 app:strokeWidth="0dp">
 
                 <LinearLayout
@@ -153,7 +155,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Expiring Soon Alerts"
-                            android:textColor="#27352B"
+                            android:textColor="@color/text_primary_dark"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
@@ -162,16 +164,21 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="3dp"
                             android:text="Highlight pantry items expiring within 7 days."
-                            android:textColor="#7A857E"
+                            android:textColor="@color/text_secondary_dark"
                             android:textSize="12sp" />
 
                     </LinearLayout>
 
                     <com.google.android.material.switchmaterial.SwitchMaterial
                         android:id="@+id/expiryAlertsSwitch"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true" />
+                        android:layout_width="58dp"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="12dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:checked="true"
+                        app:thumbTint="#FFFFFFFF"
+                        app:trackTint="@color/primary_green" />
 
                 </LinearLayout>
 
@@ -182,8 +189,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                app:cardBackgroundColor="#FFFFFF"
+                app:cardBackgroundColor="@color/surface_card"
                 app:cardCornerRadius="18dp"
+                app:cardElevation="0dp"
                 app:strokeWidth="0dp">
 
                 <LinearLayout
@@ -199,7 +207,7 @@
                         android:background="@drawable/icon_circle_green"
                         android:gravity="center"
                         android:text="!"
-                        android:textColor="#2F6B42"
+                        android:textColor="@color/primary_green"
                         android:textSize="22sp"
                         android:textStyle="bold" />
 
@@ -214,7 +222,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Low Stock Alerts"
-                            android:textColor="#27352B"
+                            android:textColor="@color/text_primary_dark"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
@@ -223,16 +231,21 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="3dp"
                             android:text="Show items that have reached their low-stock level."
-                            android:textColor="#7A857E"
+                            android:textColor="@color/text_secondary_dark"
                             android:textSize="12sp" />
 
                     </LinearLayout>
 
                     <com.google.android.material.switchmaterial.SwitchMaterial
                         android:id="@+id/lowStockAlertsSwitch"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true" />
+                        android:layout_width="58dp"
+                        android:layout_height="36dp"
+                        android:layout_marginStart="12dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:checked="true"
+                        app:thumbTint="#FFFFFFFF"
+                        app:trackTint="@color/primary_green" />
 
                 </LinearLayout>
 
@@ -244,7 +257,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="28dp"
                 android:text="About"
-                android:textColor="#27352B"
+                android:textColor="@color/text_primary_dark"
                 android:textSize="19sp"
                 android:textStyle="bold" />
 
@@ -252,8 +265,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                app:cardBackgroundColor="#FFFFFF"
+                app:cardBackgroundColor="@color/surface_card"
                 app:cardCornerRadius="18dp"
+                app:cardElevation="0dp"
                 app:strokeWidth="0dp">
 
                 <LinearLayout
@@ -266,7 +280,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Smart Pantry Manager"
-                        android:textColor="#27352B"
+                        android:textColor="@color/text_primary_dark"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
@@ -275,7 +289,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
                         android:text="A Java Android application designed to help manage pantry ingredients, reduce food waste, and find recipes based on available ingredients."
-                        android:textColor="#7A857E"
+                        android:textColor="@color/text_secondary_dark"
                         android:textSize="13sp" />
 
                     <TextView
@@ -283,7 +297,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:text="Version 1.0"
-                        android:textColor="#2F6B42"
+                        android:textColor="@color/primary_green"
                         android:textSize="12sp"
                         android:textStyle="bold" />
 
